@@ -12,7 +12,12 @@ const __dirname = path.dirname(__filename);
  * Expected output format: { "main.js": "main.bundle.a1b2c3d4.js", "main.css": "style.e5f6g7h8.css" }
  */
 function generateAssetManifest() {
-  const manifestPath = path.join(process.cwd(), "dist", "manifest.json");
+  const manifestPath = path.join(
+    process.cwd(),
+    "dist",
+    ".vite",
+    "manifest.json",
+  );
   const assetManifestPath = path.join(
     process.cwd(),
     "dist",
