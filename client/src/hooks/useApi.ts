@@ -1,27 +1,40 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ApiService } from "@/services/api";
-import {
-  Field,
-  Form,
-  User,
-  Group,
-  Tag,
-  View,
-  CreateFieldDto,
-  UpdateFieldDto,
-  CreateFormDto,
-  UpdateFormDto,
-  CreateUserDto,
-  UpdateUserDto,
-  CreateGroupDto,
-  UpdateGroupDto,
-  CreateTagDto,
-  UpdateTagDto,
-  CreateViewDto,
-  UpdateViewDto,
-  PaginationParams,
-} from "@shared/types";
+// Temporary inline types - should use shared types when imports are fixed
+interface Field {
+  id: string;
+  name: string;
+  label: string;
+  type: string;
+  description?: string;
+  required: boolean;
+  options?: any[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+type CreateFieldDto = Partial<Field>;
+type UpdateFieldDto = Partial<Field>;
+type CreateFormDto = any;
+type UpdateFormDto = any;
+type CreateUserDto = any;
+type UpdateUserDto = any;
+type CreateGroupDto = any;
+type UpdateGroupDto = any;
+type CreateTagDto = any;
+type UpdateTagDto = any;
+type CreateViewDto = any;
+type UpdateViewDto = any;
 
 // Generic hooks
 export function useGenericQuery<T>(
