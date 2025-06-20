@@ -1,224 +1,313 @@
-# ZoCare Dashboard
+# ZoCare Dashboard - Client-Server Architecture
 
-A modern, production-ready admin dashboard built as a Micro Frontend (MFE) for managing ticketing system configurations.
+A modern, production-ready admin dashboard built with client-server architecture using a Node.js BFF (Backend for Frontend) layer and React frontend.
+
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     Client      │    │      Server     │    │     Shared      │
+│   (Frontend)    │◄──►│    (BFF API)    │    │     (Types)     │
+│                 │    │                 │    │                 │
+│  React + Vite   │    │   Node.js +     │    │   TypeScript    │
+│  TypeScript     │    │   Express       │    │   Interfaces    │
+│  TailwindCSS    │    │   TypeScript    │    │   Constants     │
+│  React Query    │    │   Zod           │    │   Utilities     │
+│  shadcn/ui      │    │   Winston       │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Key Components
+
+- **Client**: React SPA with modern tooling and UI components
+- **Server**: Node.js BFF layer providing RESTful APIs
+- **Shared**: Common TypeScript types and utilities between client and server
 
 ## 🚀 Features
 
-### Core Admin Panels
+### Frontend (Client)
 
-- **Fields Management**: Create and manage reusable form fields (text, select, date, etc.)
-- **Forms Management**: Build forms using predefined fields with drag-and-drop configuration
-- **Team Members**: User management with role-based permissions
-- **Groups**: Organize users into logical groups with custom permissions
-- **Tags**: Manage categorization tags for tickets
-- **Views**: Create custom filtered ticket list views
-
-### Technical Highlights
-
-- **Micro Frontend Ready**: Generates `asset-manifest.json` for Omega Hub integration
-- **Modern React Stack**: React 18, TypeScript, React Query, React Router
-- **Beautiful UI**: Tailwind CSS with shadcn/ui components
-- **Error Handling**: Comprehensive error boundaries and loading states
-- **Responsive Design**: Mobile-first approach with dark mode support
-- **Type Safety**: Full TypeScript coverage with strict type checking
-
-## 🏗️ Architecture
-
-### Micro Frontend Integration
-
-- Built specifically for integration with Omega Hub (Node.js MFE host)
-- Generates required `asset-manifest.json` format for S3 deployment
-- Self-contained with all dependencies bundled
-
-### Tech Stack
-
-- **Build Tool**: Vite
-- **Framework**: React 18 + TypeScript
-- **UI Components**: shadcn/ui + Tailwind CSS
-- **Data Fetching**: React Query for server state management
+- **Modern React Stack**: React 18, TypeScript, Vite
+- **UI Components**: shadcn/ui + TailwindCSS
+- **State Management**: React Query for server state
 - **Routing**: React Router 6 with nested routes
-- **Forms**: React Hook Form with Zod validation
-- **Icons**: Lucide React
+- **Form Handling**: React Hook Form with Zod validation
+- **Real-time Updates**: Optimistic updates and cache invalidation
+- **Responsive Design**: Mobile-first with dark mode support
 
-## 🛠️ Development
+### Backend (Server)
+
+- **Node.js + Express**: RESTful API with TypeScript
+- **Input Validation**: Zod schemas with comprehensive error handling
+- **Caching**: In-memory caching with TTL support
+- **Security**: Helmet, CORS, rate limiting, input sanitization
+- **Logging**: Winston with structured logging
+- **Error Handling**: Global error handling with proper HTTP status codes
+- **Health Checks**: Monitoring endpoints for system health
+
+### Admin Panels
+
+1. **📋 Fields Management**: Create and manage reusable form fields
+2. **📝 Forms Management**: Build forms using predefined fields
+3. **👥 Team Members**: User management with role-based permissions
+4. **🎭 Groups**: Organize users with custom permissions
+5. **🏷️ Tags**: Manage categorization tags for tickets
+6. **👀 Views**: Create custom filtered ticket list views
+
+## 🛠️ Development Setup
 
 ### Prerequisites
 
 - Node.js 18+
-- npm/yarn/pnpm
+- npm 9+
 
-### Getting Started
+### Quick Start
 
 ```bash
-# Install dependencies
-npm install
+# Clone the repository
+git clone <repository-url>
+cd zocare-dashboard
 
-# Start development server
+# Install all dependencies
+npm run setup
+
+# Start development servers (both client and server)
 npm run dev
+```
 
-# Build for production
+This will start:
+
+- **Frontend**: http://localhost:8080
+- **Backend API**: http://localhost:3001
+
+### Individual Services
+
+```bash
+# Start only the client
+npm run dev:client
+
+# Start only the server
+npm run dev:server
+
+# Build everything
 npm run build
 
-# Build for MFE deployment
-npm run build:mfe
+# Run tests
+npm run test
+
+# Type checking
+npm run typecheck
 ```
 
-### Project Structure
+## 📁 Project Structure
 
 ```
-src/
-├── components/
-│   ├── layout/          # Dashboard layout components
-│   ├── common/          # Reusable UI components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-├── pages/              # Admin panel pages
-├── types/              # TypeScript type definitions
-└── lib/                # Utilities and helpers
+zocare-dashboard/
+├── client/                 # Frontend React application
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── services/       # API service layer
+│   │   └── lib/           # Utilities
+│   ├── public/            # Static assets
+│   └── package.json       # Client dependencies
+├── server/                # Backend BFF API
+│   ├── src/
+│   │   ├── controllers/   # Request handlers
+│   │   ├── repositories/  # Data access layer
+│   │   ├── middleware/    # Express middleware
+│   │   ├── routes/        # API route definitions
+│   │   ├���─ services/      # Business logic
+│   │   ├── validation/    # Input validation schemas
+│   │   └── config/        # Configuration
+│   ├── logs/              # Application logs
+│   └── package.json       # Server dependencies
+├── shared/                # Shared types and utilities
+│   ├── types.ts          # TypeScript interfaces
+│   ├── constants.ts      # Shared constants
+│   └── utils.ts          # Utility functions
+└── package.json          # Root monorepo configuration
 ```
 
-## 🎯 Usage
+## 🔌 API Endpoints
 
-### Navigation
+### Dashboard
 
-The dashboard provides a clean sidebar navigation with organized sections:
+- `GET /api/v1/dashboard/stats` - Dashboard statistics
+- `GET /api/v1/dashboard/activity` - Recent activity
+- `GET /api/v1/dashboard/overview` - Complete overview
 
-- **Dashboard**: Overview and system status
-- **Configuration**: Fields and Forms management
-- **User Management**: Team Members and Groups
-- **Content**: Tags and Views
+### Fields
 
-### Data Management
+- `GET /api/v1/fields` - List fields with pagination
+- `POST /api/v1/fields` - Create new field
+- `GET /api/v1/fields/:id` - Get field by ID
+- `PUT /api/v1/fields/:id` - Update field
+- `DELETE /api/v1/fields/:id` - Delete field
+- `PATCH /api/v1/fields/:id/toggle-active` - Toggle field status
 
-All data operations use React Query for:
+### Forms, Users, Groups, Tags, Views
 
-- Optimistic updates
-- Background refetching
-- Error handling
-- Loading states
-- Caching
-
-### Form Patterns
-
-Consistent form patterns across all admin panels:
-
-- Input validation with clear error messages
-- Loading states during submission
-- Success/error notifications
-- Auto-save capabilities where appropriate
+Similar RESTful patterns for all entities.
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-No environment variables required for basic operation. The app uses mock data that can be easily replaced with real API endpoints.
+**Server (.env)**:
 
-### Customization
+```env
+NODE_ENV=development
+PORT=3001
+HOST=localhost
+CORS_ORIGIN=http://localhost:8080
+API_PREFIX=/api/v1
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+CACHE_TTL_SECONDS=300
+LOG_LEVEL=info
+```
 
-- **Branding**: Update CSS variables in `src/index.css`
-- **Colors**: Modify the ZoCare theme in `tailwind.config.ts`
-- **API Integration**: Replace mock functions in `src/hooks/useApi.ts`
+**Client**:
+API base URL is configured in `shared/constants.ts`
 
-## 📦 Deployment
-
-### MFE Deployment to S3
+## 🧪 Testing
 
 ```bash
-# Build the application
+# Run all tests
+npm run test
+
+# Run client tests only
+npm run test:client
+
+# Run server tests only
+npm run test:server
+
+# Type checking
+npm run typecheck
+```
+
+## 📦 Building & Deployment
+
+### Development Build
+
+```bash
+npm run build
+```
+
+### Micro Frontend Build
+
+```bash
 npm run build:mfe
-
-# Upload dist/ contents to S3 bucket
-# Ensure asset-manifest.json is accessible at bucket root
 ```
 
-### Omega Hub Integration
+Generates the required `asset-manifest.json` for Omega Hub integration.
 
-The generated `asset-manifest.json` follows the required format:
+### Production Deployment
 
-```json
-{
-  "main.js": "assets/main.[hash].js",
-  "main.css": "assets/main.[hash].css"
-}
+1. **Server Deployment**:
+
+   ```bash
+   cd server
+   npm run build
+   npm start
+   ```
+
+2. **Client Deployment**:
+   ```bash
+   cd client
+   npm run build:mfe
+   # Upload dist/ contents to S3
+   ```
+
+## 🔒 Security Features
+
+- **Input Validation**: Zod schemas for all API inputs
+- **Rate Limiting**: Configurable request rate limits
+- **CORS**: Strict origin validation
+- **Helmet**: Security headers
+- **Input Sanitization**: XSS protection
+- **Error Handling**: No sensitive data exposure
+
+## 📊 Monitoring & Logging
+
+- **Structured Logging**: Winston with JSON format
+- **Health Checks**: `/health` endpoint
+- **Performance Monitoring**: Request timing and caching stats
+- **Error Tracking**: Comprehensive error logging
+
+## 🚀 Performance Optimizations
+
+- **Caching**: Multi-level caching with TTL
+- **Code Splitting**: Lazy loading and dynamic imports
+- **Bundle Optimization**: Tree shaking and minification
+- **API Optimization**: Pagination and filtering
+- **React Query**: Smart caching and background updates
+
+## 🤝 Development Guidelines
+
+### Code Quality
+
+- **TypeScript**: Strict type checking enabled
+- **ESLint**: Code quality and consistency
+- **Prettier**: Code formatting
+- **Zod**: Runtime type validation
+
+### Commit Standards
+
+- Use conventional commit messages
+- Include type checking before commits
+- Test critical functionality
+
+### API Design
+
+- RESTful endpoints with consistent patterns
+- Proper HTTP status codes
+- Comprehensive error responses
+- Input validation on all endpoints
+
+## 📈 Scaling Considerations
+
+- **Database**: Currently uses mock data, ready for database integration
+- **Authentication**: JWT token structure prepared
+- **Microservices**: BFF pattern allows easy service decomposition
+- **Caching**: Redis integration ready
+- **Load Balancing**: Stateless server design
+
+## 🔄 CI/CD Pipeline (Ready)
+
+```yaml
+# Suggested pipeline stages
+1. Install dependencies
+2. Type checking
+3. Linting
+4. Testing
+5. Build client & server
+6. Generate MFE manifest
+7. Deploy to staging/production
 ```
 
-## 🎨 Design System
+## 📚 Documentation
 
-### Color Palette
+- **API Documentation**: Generated from route definitions
+- **Component Library**: Storybook ready
+- **Type Documentation**: Generated from TypeScript
 
-- **Primary**: Purple (#8b5cf6) - ZoCare brand color
-- **Success**: Green (#10b981)
-- **Warning**: Amber (#f59e0b)
-- **Error**: Red (#ef4444)
+## 🆘 Troubleshooting
 
-### Typography
+### Common Issues
 
-- **Font Family**: Inter (system font stack)
-- **Headings**: Semibold weights for hierarchy
-- **Body**: Regular weight for readability
+1. **CORS Errors**: Check `CORS_ORIGIN` environment variable
+2. **API Connection**: Verify server is running on port 3001
+3. **Cache Issues**: Clear cache with `/api/v1/dashboard/cache` DELETE
+4. **Build Errors**: Check TypeScript compilation
 
-### Spacing
+### Logs Location
 
-- Consistent 4px grid system
-- Generous whitespace for clean appearance
-- Responsive breakpoints: sm, md, lg, xl
-
-## 🔍 Code Quality
-
-### Best Practices Implemented
-
-- **Component Composition**: Small, focused components
-- **Custom Hooks**: Reusable business logic
-- **Error Boundaries**: Graceful error handling
-- **Loading States**: Skeleton loaders and spinners
-- **TypeScript**: Strict type checking
-- **Code Splitting**: Lazy loading for performance
-
-### Testing
-
-- Unit tests for utility functions
-- Component testing with Vitest
-- Type checking with TypeScript compiler
-
-## 📈 Performance
-
-### Optimizations
-
-- Tree shaking for minimal bundle size
-- Code splitting by route
-- Optimized asset loading
-- Efficient re-renders with React Query
-- Memoized expensive calculations
-
-### Bundle Analysis
-
-Current build generates:
-
-- ~865KB JavaScript (gzipped: ~236KB)
-- ~64KB CSS (gzipped: ~11KB)
-
-## 🤝 Contributing
-
-### Development Guidelines
-
-1. Follow the established component patterns
-2. Use TypeScript for all new code
-3. Implement proper error handling
-4. Add loading states for async operations
-5. Write descriptive commit messages
-6. Test your changes thoroughly
-
-### Code Style
-
-- Use Prettier for formatting
-- Follow React best practices
-- Prefer composition over inheritance
-- Keep components focused and single-purpose
-
-## 📄 License
-
-This project is proprietary software for ZoCare Dashboard.
+- Server logs: `server/logs/`
+- Console logs in development mode
 
 ---
 
-Built with ❤️ using modern React patterns and best practices.
+**Built with ❤️ using modern React and Node.js best practices.**
