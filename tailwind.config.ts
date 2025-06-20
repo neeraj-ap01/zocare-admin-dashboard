@@ -62,6 +62,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        zocare: {
+          DEFAULT: "hsl(var(--zocare-brand))",
+          light: "hsl(var(--zocare-brand-light))",
+          dark: "hsl(var(--zocare-brand-dark))",
+          success: "hsl(var(--zocare-success))",
+          warning: "hsl(var(--zocare-warning))",
+          error: "hsl(var(--zocare-error))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
