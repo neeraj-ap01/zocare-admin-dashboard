@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { FieldRepository } from "@/repositories/fieldRepository";
 import { DashboardRepository } from "@/repositories/dashboardRepository";
 import { CacheService } from "@/services/cache";
-import { createApiResponse, createApiError } from "@shared/utils";
+import { createApiResponse, createApiError } from "../shared/utils";
 import {
   HTTP_STATUS,
   ERROR_CODES,
   CACHE_KEYS,
   CACHE_TTL,
-} from "@shared/constants";
+} from "../shared/constants";
 import { logger, logWithContext } from "@/utils/logger";
 import {
   CreateFieldRequest,

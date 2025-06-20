@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FIELD_TYPES, USER_ROLES, FILTER_OPERATORS } from "@shared/constants";
+import { FIELD_TYPES, USER_ROLES, FILTER_OPERATORS } from "../shared/constants";
 
 // Common schemas
 export const paginationSchema = z.object({

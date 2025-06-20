@@ -3,9 +3,9 @@ import {
   CreateFieldDto,
   UpdateFieldDto,
   PaginationParams,
-} from "@shared/types";
+} from "../../shared/types";
 import { mockData, getNextId, simulateDelay } from "@/data/mockData";
-import { generateId } from "@shared/utils";
+import { generateId } from "../../shared/utils";
 
 export class FieldRepository {
   /**

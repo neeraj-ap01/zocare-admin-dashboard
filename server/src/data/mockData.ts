@@ -7,7 +7,7 @@ import {
   View,
   DashboardStats,
   RecentActivity,
-} from "@shared/types";
+} from "../shared/types";
 
 // Mock data store
 export const mockData = {
