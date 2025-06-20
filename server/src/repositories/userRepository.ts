@@ -3,7 +3,7 @@ import {
   CreateUserDto,
   UpdateUserDto,
   PaginationParams,
-} from "../shared/types";
+} from "../../shared/types";
 import { mockData, getNextId, simulateDelay } from "@/data/mockData";
 
 export class UserRepository {

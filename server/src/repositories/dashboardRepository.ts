@@ -1,4 +1,4 @@
-import { DashboardStats, RecentActivity } from "../shared/types";
+import { DashboardStats, RecentActivity } from "../../shared/types";
 import { mockData, simulateDelay } from "@/data/mockData";
 
 export class DashboardRepository {

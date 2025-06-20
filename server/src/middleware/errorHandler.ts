@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { createApiError } from "../shared/utils";
-import { HTTP_STATUS, ERROR_CODES } from "../shared/constants";
+import { createApiError } from "../../shared/utils";
+import { HTTP_STATUS, ERROR_CODES } from "../../shared/constants";
 import { logger } from "@/utils/logger";
 import { isDevelopment } from "@/config/env";
 
