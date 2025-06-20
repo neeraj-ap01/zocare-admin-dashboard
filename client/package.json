@@ -4,7 +4,7 @@
   "description": "ZoCare Dashboard Frontend",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8080",
     "build": "vite build",
     "build:mfe": "npm run build",
     "test": "vitest --run",
