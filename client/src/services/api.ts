@@ -1,29 +1,154 @@
-import {
-  ApiResponse,
-  PaginatedResponse,
-  Field,
-  Form,
-  User,
-  Group,
-  Tag,
-  View,
-  DashboardStats,
-  RecentActivity,
-  CreateFieldDto,
-  UpdateFieldDto,
-  CreateFormDto,
-  UpdateFormDto,
-  CreateUserDto,
-  UpdateUserDto,
-  CreateGroupDto,
-  UpdateGroupDto,
-  CreateTagDto,
-  UpdateTagDto,
-  CreateViewDto,
-  UpdateViewDto,
-  PaginationParams,
-} from "@shared/types";
-import { API_BASE_URL, API_ENDPOINTS } from "@shared/constants";
+// Temporary inline types - should be moved back to shared when imports are fixed
+interface ApiResponse<T> {
+  data: T;
+  message?: string;
+  status: "success" | "error";
+}
+
+interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+interface Field {
+  id: string;
+  name: string;
+  label: string;
+  type: string;
+  description?: string;
+  required: boolean;
+  options?: any[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Form {
+  id: string;
+  name: string;
+  description?: string;
+  fields: any[];
+  isActive: boolean;
+  divisionId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  isActive: boolean;
+  groupIds: string[];
+  divisionId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Group {
+  id: string;
+  name: string;
+  description?: string;
+  color?: string;
+  userIds: string[];
+  divisionId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Tag {
+  id: string;
+  name: string;
+  color: string;
+  description?: string;
+  isActive: boolean;
+  usageCount: number;
+  divisionId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface View {
+  id: string;
+  name: string;
+  description?: string;
+  filters: any[];
+  sortBy?: string;
+  sortOrder: "asc" | "desc";
+  columnsVisible: string[];
+  isPublic: boolean;
+  isDefault: boolean;
+  divisionId: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface DashboardStats {
+  totalFields: number;
+  activeForms: number;
+  teamMembers: number;
+  activeGroups: number;
+  totalTags: number;
+  customViews: number;
+}
+
+interface RecentActivity {
+  id: string;
+  action: string;
+  description: string;
+  time: string;
+  type: string;
+}
+
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+type CreateFieldDto = Partial<Field>;
+type UpdateFieldDto = Partial<Field>;
+type CreateFormDto = Partial<Form>;
+type UpdateFormDto = Partial<Form>;
+type CreateUserDto = Partial<User>;
+type UpdateUserDto = Partial<User>;
+type CreateGroupDto = Partial<Group>;
+type UpdateGroupDto = Partial<Group>;
+type CreateTagDto = Partial<Tag>;
+type UpdateTagDto = Partial<Tag>;
+type CreateViewDto = Partial<View>;
+type UpdateViewDto = Partial<View>;
+// import { API_BASE_URL, API_ENDPOINTS } from "@shared/constants";
+
+// Temporary direct configuration
+const API_BASE_URL = "http://localhost:3001";
+const API_ENDPOINTS = {
+  HEALTH: "/health",
+  DASHBOARD_STATS: "/dashboard/stats",
+  RECENT_ACTIVITY: "/dashboard/activity",
+  FIELDS: "/fields",
+  FIELD_BY_ID: (id: string) => `/fields/${id}`,
+  FORMS: "/forms",
+  FORM_BY_ID: (id: string) => `/forms/${id}`,
+  USERS: "/users",
+  USER_BY_ID: (id: string) => `/users/${id}`,
+  GROUPS: "/groups",
+  GROUP_BY_ID: (id: string) => `/groups/${id}`,
+  TAGS: "/tags",
+  TAG_BY_ID: (id: string) => `/tags/${id}`,
+  VIEWS: "/views",
+  VIEW_BY_ID: (id: string) => `/views/${id}`,
+};
 
 // API configuration
 const API_CONFIG = {
