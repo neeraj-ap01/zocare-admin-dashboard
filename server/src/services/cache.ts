@@ -1,6 +1,6 @@
 import NodeCache from "node-cache";
-import { serverConfig } from "@/config/env";
-import { logger } from "@/utils/logger";
+import { serverConfig } from "../config/env.js";
+import { logger } from "../utils/logger.js";
 import { CACHE_KEYS, CACHE_TTL } from "../../shared/constants";
 
 // Initialize cache instance

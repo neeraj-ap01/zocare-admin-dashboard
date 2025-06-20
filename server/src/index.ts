@@ -2,14 +2,14 @@ import express from "express";
 import compression from "compression";
 import morgan from "morgan";
 import cors from "cors";
-import { serverConfig, isDevelopment } from "@/config/env";
-import { logger, logRequest } from "@/utils/logger";
-import { apiRoutes } from "@/routes";
+import { serverConfig, isDevelopment } from "./config/env.js";
+import { logger, logRequest } from "./utils/logger.js";
+import { apiRoutes } from "./routes/index.js";
 import {
   errorHandler,
   notFoundHandler,
   gracefulShutdown,
-} from "@/middleware/errorHandler";
+} from "./middleware/errorHandler.js";
 import {
   helmetConfig,
   rateLimiter,
@@ -18,9 +18,9 @@ import {
   requestId,
   requestTimeout,
   bodySizeLimit,
-} from "@/middleware/security";
-import { sanitizeInput } from "@/middleware/validation";
-import { CacheService } from "@/services/cache";
+} from "./middleware/security.js";
+import { sanitizeInput } from "./middleware/validation.js";
+import { CacheService } from "./services/cache.js";
 
 // Create Express application
 const app = express();

@@ -1,5 +1,5 @@
 import winston from "winston";
-import { serverConfig, isDevelopment } from "@/config/env";
+import { serverConfig, isDevelopment } from "../config/env.js";
 
 // Define log format
 const logFormat = winston.format.combine(
