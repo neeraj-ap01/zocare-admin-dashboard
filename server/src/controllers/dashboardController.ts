@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { DashboardRepository } from "@/repositories/dashboardRepository";
 import { CacheService } from "@/services/cache";
-import { createApiResponse } from "../shared/utils";
-import { HTTP_STATUS, ERROR_CODES, CACHE_KEYS } from "../shared/constants";
+import { createApiResponse } from "../../shared/utils";
+import { HTTP_STATUS, ERROR_CODES, CACHE_KEYS } from "../../shared/constants";
 import { logger, logWithContext } from "@/utils/logger";
 
 export class DashboardController {
