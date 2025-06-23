@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, X, GripVertical } from "lucide-react";
 import { CreateFieldType } from "./FieldTypeSelector";
+import { CsvUpload } from "./CsvUpload";
 
 interface FieldValue {
   id: string;
@@ -211,6 +212,14 @@ export function FieldValuesSection({
   };
 
   const isCheckboxType = fieldType === "CHECKBOX";
+  const supportsCSVImport = ["DROPDOWN", "MULTISELECT", "RADIO"].includes(
+    fieldType,
+  );
+
+  const handleCsvImport = (importedValues: FieldValue[]) => {
+    // Merge with existing values or replace them
+    onChange(importedValues);
+  };
 
   return (
     <Card>
@@ -221,6 +230,22 @@ export function FieldValuesSection({
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* CSV Upload Section for supported field types */}
+        {supportsCSVImport && (
+          <>
+            <CsvUpload onDataImported={handleCsvImport} fieldType={fieldType} />
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or add manually
+                </span>
+              </div>
+            </div>
+          </>
+        )}
         {/* Existing Values */}
         {values.length > 0 && (
           <div className="space-y-2">
