@@ -1,55 +1,226 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ApiService } from "@/services/api";
-// Temporary inline types - should use shared types when imports are fixed
-interface Field {
-  id: string;
-  name: string;
-  label: string;
-  type: string;
-  description?: string;
-  required: boolean;
-  options?: any[];
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
-interface PaginationParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-}
+// Mock API functions - replace with actual API calls
+const mockApi = {
+  // Fields API
+  getFields: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockData.fields;
+  },
+  createField: async (field: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...field, id: Date.now().toString() };
+  },
+  updateField: async (id: string, field: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...field, id };
+  },
+  deleteField: async (id: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id };
+  },
 
-type CreateFieldDto = Partial<Field>;
-type UpdateFieldDto = Partial<Field>;
-type CreateFormDto = any;
-type UpdateFormDto = any;
-type CreateUserDto = any;
-type UpdateUserDto = any;
-type CreateGroupDto = any;
-type UpdateGroupDto = any;
-type CreateTagDto = any;
-type UpdateTagDto = any;
-type CreateViewDto = any;
-type UpdateViewDto = any;
+  // Forms API
+  getForms: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockData.forms;
+  },
+  createForm: async (form: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...form, id: Date.now().toString() };
+  },
+  updateForm: async (id: string, form: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...form, id };
+  },
+  deleteForm: async (id: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id };
+  },
+
+  // Users API
+  getUsers: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockData.users;
+  },
+  createUser: async (user: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...user, id: Date.now().toString() };
+  },
+  updateUser: async (id: string, user: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...user, id };
+  },
+  deleteUser: async (id: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id };
+  },
+
+  // Groups API
+  getGroups: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockData.groups;
+  },
+  createGroup: async (group: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...group, id: Date.now().toString() };
+  },
+  updateGroup: async (id: string, group: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...group, id };
+  },
+  deleteGroup: async (id: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id };
+  },
+
+  // Tags API
+  getTags: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockData.tags;
+  },
+  createTag: async (tag: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...tag, id: Date.now().toString() };
+  },
+  updateTag: async (id: string, tag: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...tag, id };
+  },
+  deleteTag: async (id: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id };
+  },
+
+  // Views API
+  getViews: async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockData.views;
+  },
+  createView: async (view: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...view, id: Date.now().toString() };
+  },
+  updateView: async (id: string, view: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { ...view, id };
+  },
+  deleteView: async (id: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id };
+  },
+};
+
+// Mock data
+const mockData = {
+  fields: [
+    {
+      id: "1",
+      name: "priority",
+      label: "Priority",
+      type: "select",
+      required: true,
+      options: [
+        { id: "1", label: "Low", value: "low", color: "#10b981" },
+        { id: "2", label: "Medium", value: "medium", color: "#f59e0b" },
+        { id: "3", label: "High", value: "high", color: "#ef4444" },
+      ],
+      isActive: true,
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date("2024-01-01"),
+    },
+    {
+      id: "2",
+      name: "due_date",
+      label: "Due Date",
+      type: "date",
+      required: false,
+      isActive: true,
+      createdAt: new Date("2024-01-02"),
+      updatedAt: new Date("2024-01-02"),
+    },
+  ],
+  forms: [
+    {
+      id: "1",
+      name: "Support Ticket Form",
+      description: "Default form for support tickets",
+      fields: [],
+      isActive: true,
+      divisionId: "1",
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date("2024-01-01"),
+    },
+  ],
+  users: [
+    {
+      id: "1",
+      email: "john.doe@example.com",
+      firstName: "John",
+      lastName: "Doe",
+      role: "admin",
+      isActive: true,
+      groupIds: ["1"],
+      divisionId: "1",
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date("2024-01-01"),
+    },
+  ],
+  groups: [
+    {
+      id: "1",
+      name: "Support Team",
+      description: "Primary support team for handling tickets",
+      color: "#8b5cf6",
+      userIds: ["1"],
+      permissions: [],
+      divisionId: "1",
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date("2024-01-01"),
+    },
+  ],
+  tags: [
+    {
+      id: "1",
+      name: "Bug",
+      color: "#ef4444",
+      description: "Software bug or error",
+      isActive: true,
+      usageCount: 45,
+      divisionId: "1",
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date("2024-01-01"),
+    },
+  ],
+  views: [
+    {
+      id: "1",
+      name: "Open Tickets",
+      description: "All open support tickets",
+      filters: [],
+      sortBy: "createdAt",
+      sortOrder: "desc" as const,
+      columnsVisible: ["title", "priority", "assignee", "createdAt"],
+      isPublic: true,
+      isDefault: true,
+      divisionId: "1",
+      createdBy: "1",
+      createdAt: new Date("2024-01-01"),
+      updatedAt: new Date("2024-01-01"),
+    },
+  ],
+};
 
 // Generic hooks
 export function useGenericQuery<T>(
   queryKey: string[],
   queryFn: () => Promise<T>,
-  options?: {
-    staleTime?: number;
-    enabled?: boolean;
-  },
 ) {
   return useQuery({
     queryKey,
     queryFn,
-    staleTime: options?.staleTime || 5 * 60 * 1000, // 5 minutes
-    enabled: options?.enabled,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -59,8 +230,6 @@ export function useGenericMutation<TData, TVariables>(
     onSuccess?: (data: TData) => void;
     onError?: (error: Error) => void;
     invalidateQueries?: string[][];
-    successMessage?: string;
-    errorMessage?: string;
   },
 ) {
   const queryClient = useQueryClient();
@@ -68,227 +237,153 @@ export function useGenericMutation<TData, TVariables>(
   return useMutation({
     mutationFn,
     onSuccess: (data) => {
-      if (options?.successMessage) {
-        toast.success(options.successMessage);
-      }
       options?.onSuccess?.(data);
       options?.invalidateQueries?.forEach((queryKey) => {
         queryClient.invalidateQueries({ queryKey });
       });
     },
     onError: (error: Error) => {
-      const errorMessage =
-        options?.errorMessage || error.message || "An error occurred";
-      toast.error(errorMessage);
+      toast.error(error.message || "An error occurred");
       options?.onError?.(error);
     },
   });
 }
 
-// Dashboard hooks
-export const useDashboardStats = () =>
-  useGenericQuery(["dashboard", "stats"], ApiService.dashboard.getStats);
-
-export const useRecentActivity = (limit?: number) =>
-  useGenericQuery(["dashboard", "activity", limit], () =>
-    ApiService.dashboard.getRecentActivity(limit),
-  );
-
-export const useDashboardOverview = () =>
-  useGenericQuery(["dashboard", "overview"], ApiService.dashboard.getOverview);
-
-// Field hooks
-export const useFields = (params?: PaginationParams) =>
-  useGenericQuery(["fields", params], () => ApiService.fields.getAll(params));
-
-export const useField = (id: string) =>
-  useGenericQuery(["fields", id], () => ApiService.fields.getById(id), {
-    enabled: !!id,
-  });
+// Specific hooks for each entity
+export const useFields = () => useGenericQuery(["fields"], mockApi.getFields);
 
 export const useCreateField = () =>
-  useGenericMutation((data: CreateFieldDto) => ApiService.fields.create(data), {
-    successMessage: "Field created successfully",
+  useGenericMutation(mockApi.createField, {
+    onSuccess: () => toast.success("Field created successfully"),
     invalidateQueries: [["fields"]],
   });
 
 export const useUpdateField = () =>
   useGenericMutation(
-    ({ id, ...data }: { id: string } & UpdateFieldDto) =>
-      ApiService.fields.update(id, data),
+    ({ id, ...data }: { id: string } & any) => mockApi.updateField(id, data),
     {
-      successMessage: "Field updated successfully",
+      onSuccess: () => toast.success("Field updated successfully"),
       invalidateQueries: [["fields"]],
     },
   );
 
 export const useDeleteField = () =>
-  useGenericMutation((id: string) => ApiService.fields.delete(id), {
-    successMessage: "Field deleted successfully",
+  useGenericMutation(mockApi.deleteField, {
+    onSuccess: () => toast.success("Field deleted successfully"),
     invalidateQueries: [["fields"]],
   });
 
-export const useToggleFieldActive = () =>
-  useGenericMutation((id: string) => ApiService.fields.toggleActive(id), {
-    successMessage: "Field status updated",
-    invalidateQueries: [["fields"]],
-  });
-
-// Form hooks
-export const useForms = (params?: PaginationParams) =>
-  useGenericQuery(["forms", params], () => ApiService.forms.getAll(params));
-
-export const useForm = (id: string) =>
-  useGenericQuery(["forms", id], () => ApiService.forms.getById(id), {
-    enabled: !!id,
-  });
+export const useForms = () => useGenericQuery(["forms"], mockApi.getForms);
 
 export const useCreateForm = () =>
-  useGenericMutation((data: CreateFormDto) => ApiService.forms.create(data), {
-    successMessage: "Form created successfully",
+  useGenericMutation(mockApi.createForm, {
+    onSuccess: () => toast.success("Form created successfully"),
     invalidateQueries: [["forms"]],
   });
 
 export const useUpdateForm = () =>
   useGenericMutation(
-    ({ id, ...data }: { id: string } & UpdateFormDto) =>
-      ApiService.forms.update(id, data),
+    ({ id, ...data }: { id: string } & any) => mockApi.updateForm(id, data),
     {
-      successMessage: "Form updated successfully",
+      onSuccess: () => toast.success("Form updated successfully"),
       invalidateQueries: [["forms"]],
     },
   );
 
 export const useDeleteForm = () =>
-  useGenericMutation((id: string) => ApiService.forms.delete(id), {
-    successMessage: "Form deleted successfully",
+  useGenericMutation(mockApi.deleteForm, {
+    onSuccess: () => toast.success("Form deleted successfully"),
     invalidateQueries: [["forms"]],
   });
 
-// User hooks
-export const useUsers = (params?: PaginationParams) =>
-  useGenericQuery(["users", params], () => ApiService.users.getAll(params));
-
-export const useUser = (id: string) =>
-  useGenericQuery(["users", id], () => ApiService.users.getById(id), {
-    enabled: !!id,
-  });
+export const useUsers = () => useGenericQuery(["users"], mockApi.getUsers);
 
 export const useCreateUser = () =>
-  useGenericMutation((data: CreateUserDto) => ApiService.users.create(data), {
-    successMessage: "User created successfully",
+  useGenericMutation(mockApi.createUser, {
+    onSuccess: () => toast.success("User created successfully"),
     invalidateQueries: [["users"]],
   });
 
 export const useUpdateUser = () =>
   useGenericMutation(
-    ({ id, ...data }: { id: string } & UpdateUserDto) =>
-      ApiService.users.update(id, data),
+    ({ id, ...data }: { id: string } & any) => mockApi.updateUser(id, data),
     {
-      successMessage: "User updated successfully",
+      onSuccess: () => toast.success("User updated successfully"),
       invalidateQueries: [["users"]],
     },
   );
 
 export const useDeleteUser = () =>
-  useGenericMutation((id: string) => ApiService.users.delete(id), {
-    successMessage: "User deleted successfully",
+  useGenericMutation(mockApi.deleteUser, {
+    onSuccess: () => toast.success("User deleted successfully"),
     invalidateQueries: [["users"]],
   });
 
-// Group hooks
-export const useGroups = (params?: PaginationParams) =>
-  useGenericQuery(["groups", params], () => ApiService.groups.getAll(params));
-
-export const useGroup = (id: string) =>
-  useGenericQuery(["groups", id], () => ApiService.groups.getById(id), {
-    enabled: !!id,
-  });
+export const useGroups = () => useGenericQuery(["groups"], mockApi.getGroups);
 
 export const useCreateGroup = () =>
-  useGenericMutation((data: CreateGroupDto) => ApiService.groups.create(data), {
-    successMessage: "Group created successfully",
+  useGenericMutation(mockApi.createGroup, {
+    onSuccess: () => toast.success("Group created successfully"),
     invalidateQueries: [["groups"]],
   });
 
 export const useUpdateGroup = () =>
   useGenericMutation(
-    ({ id, ...data }: { id: string } & UpdateGroupDto) =>
-      ApiService.groups.update(id, data),
+    ({ id, ...data }: { id: string } & any) => mockApi.updateGroup(id, data),
     {
-      successMessage: "Group updated successfully",
+      onSuccess: () => toast.success("Group updated successfully"),
       invalidateQueries: [["groups"]],
     },
   );
 
 export const useDeleteGroup = () =>
-  useGenericMutation((id: string) => ApiService.groups.delete(id), {
-    successMessage: "Group deleted successfully",
+  useGenericMutation(mockApi.deleteGroup, {
+    onSuccess: () => toast.success("Group deleted successfully"),
     invalidateQueries: [["groups"]],
   });
 
-// Tag hooks
-export const useTags = (params?: PaginationParams) =>
-  useGenericQuery(["tags", params], () => ApiService.tags.getAll(params));
-
-export const useTag = (id: string) =>
-  useGenericQuery(["tags", id], () => ApiService.tags.getById(id), {
-    enabled: !!id,
-  });
+export const useTags = () => useGenericQuery(["tags"], mockApi.getTags);
 
 export const useCreateTag = () =>
-  useGenericMutation((data: CreateTagDto) => ApiService.tags.create(data), {
-    successMessage: "Tag created successfully",
+  useGenericMutation(mockApi.createTag, {
+    onSuccess: () => toast.success("Tag created successfully"),
     invalidateQueries: [["tags"]],
   });
 
 export const useUpdateTag = () =>
   useGenericMutation(
-    ({ id, ...data }: { id: string } & UpdateTagDto) =>
-      ApiService.tags.update(id, data),
+    ({ id, ...data }: { id: string } & any) => mockApi.updateTag(id, data),
     {
-      successMessage: "Tag updated successfully",
+      onSuccess: () => toast.success("Tag updated successfully"),
       invalidateQueries: [["tags"]],
     },
   );
 
 export const useDeleteTag = () =>
-  useGenericMutation((id: string) => ApiService.tags.delete(id), {
-    successMessage: "Tag deleted successfully",
+  useGenericMutation(mockApi.deleteTag, {
+    onSuccess: () => toast.success("Tag deleted successfully"),
     invalidateQueries: [["tags"]],
   });
 
-// View hooks
-export const useViews = (params?: PaginationParams) =>
-  useGenericQuery(["views", params], () => ApiService.views.getAll(params));
-
-export const useView = (id: string) =>
-  useGenericQuery(["views", id], () => ApiService.views.getById(id), {
-    enabled: !!id,
-  });
+export const useViews = () => useGenericQuery(["views"], mockApi.getViews);
 
 export const useCreateView = () =>
-  useGenericMutation((data: CreateViewDto) => ApiService.views.create(data), {
-    successMessage: "View created successfully",
+  useGenericMutation(mockApi.createView, {
+    onSuccess: () => toast.success("View created successfully"),
     invalidateQueries: [["views"]],
   });
 
 export const useUpdateView = () =>
   useGenericMutation(
-    ({ id, ...data }: { id: string } & UpdateViewDto) =>
-      ApiService.views.update(id, data),
+    ({ id, ...data }: { id: string } & any) => mockApi.updateView(id, data),
     {
-      successMessage: "View updated successfully",
+      onSuccess: () => toast.success("View updated successfully"),
       invalidateQueries: [["views"]],
     },
   );
 
 export const useDeleteView = () =>
-  useGenericMutation((id: string) => ApiService.views.delete(id), {
-    successMessage: "View deleted successfully",
+  useGenericMutation(mockApi.deleteView, {
+    onSuccess: () => toast.success("View deleted successfully"),
     invalidateQueries: [["views"]],
   });
-
-// Health check hook
-export const useHealth = () =>
-  useGenericQuery(["health"], ApiService.health, { staleTime: 0 });
