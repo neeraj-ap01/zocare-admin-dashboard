@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
@@ -210,17 +211,19 @@ export function FieldConfigurationForm({
           </div>
 
           {/* Required to solve a ticket */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="required"
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="space-y-0.5">
+              <Label className="text-sm font-medium">
+                Required to solve a ticket
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                This field must be completed before a ticket can be solved
+              </p>
+            </div>
+            <Switch
               checked={formData.required}
-              onChange={(e) => updateFormData("required", e.target.checked)}
-              className="rounded border-gray-300"
+              onCheckedChange={(checked) => updateFormData("required", checked)}
             />
-            <Label htmlFor="required" className="text-sm font-medium">
-              Required to solve a ticket
-            </Label>
           </div>
 
           {/* Field Values Section - Conditional */}
@@ -314,66 +317,89 @@ export function FieldConfigurationForm({
 
       {/* Preview Section */}
       <div className="col-span-1">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Preview</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Agent view</Label>
-              <p className="text-sm text-muted-foreground">
-                This is what agents will see when they interact with this field
-                in Agent Workspace.
-              </p>
-            </div>
+        <div className="sticky top-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Preview</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Agent view</Label>
+                <p className="text-sm text-muted-foreground">
+                  This is what agents will see when they interact with this
+                  field in Agent Workspace.
+                </p>
+              </div>
 
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">{getPreviewLabel()}</Label>
-              {fieldType === "TEXT" && (
-                <Input placeholder="Enter text..." disabled />
-              )}
-              {fieldType === "NUMBER" && (
-                <Input type="number" placeholder="Enter number..." disabled />
-              )}
-              {fieldType === "DROPDOWN" && (
-                <select
-                  className="w-full p-2 border rounded-md bg-gray-50"
-                  disabled
-                >
-                  <option>
-                    {formData.defaultValue || "Select an option..."}
-                  </option>
-                  {formData.values.map((value) => (
-                    <option key={value.id}>{value.label}</option>
-                  ))}
-                </select>
-              )}
-              {fieldType === "MULTISELECT" && (
-                <div className="w-full p-2 border rounded-md bg-gray-50 text-muted-foreground">
-                  Select multiple options...
-                </div>
-              )}
-              {fieldType === "CHECKBOX" && (
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" disabled />
-                  <span className="text-sm">
-                    {formData.values[0]?.label || "Checkbox option"}
-                  </span>
-                </div>
-              )}
-              {fieldType === "RADIO" && (
-                <div className="space-y-2">
-                  {formData.values.map((value) => (
-                    <div key={value.id} className="flex items-center space-x-2">
-                      <input type="radio" name="preview-radio" disabled />
-                      <span className="text-sm">{value.label}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">
+                  {getPreviewLabel()}
+                </Label>
+                {fieldType === "TEXT" && <Input placeholder="Enter text..." />}
+                {fieldType === "NUMBER" && (
+                  <Input type="number" placeholder="Enter number..." />
+                )}
+                {fieldType === "DROPDOWN" && (
+                  <select className="w-full p-2 border rounded-md">
+                    <option value="">
+                      {formData.defaultValue || "Select an option..."}
+                    </option>
+                    {formData.values.map((value) => (
+                      <option key={value.id} value={value.value}>
+                        {value.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {fieldType === "MULTISELECT" && (
+                  <select
+                    multiple
+                    className="w-full p-2 border rounded-md min-h-[80px]"
+                  >
+                    {formData.values.map((value) => (
+                      <option key={value.id} value={value.value}>
+                        {value.label}
+                      </option>
+                    ))}
+                    {formData.values.length === 0 && (
+                      <option disabled>No options available</option>
+                    )}
+                  </select>
+                )}
+                {fieldType === "CHECKBOX" && (
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" />
+                    <span className="text-sm">
+                      {formData.label || "Checkbox field"}
+                    </span>
+                  </div>
+                )}
+                {fieldType === "RADIO" && (
+                  <div className="space-y-2">
+                    {formData.values.map((value) => (
+                      <div
+                        key={value.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <input
+                          type="radio"
+                          name="preview-radio"
+                          value={value.value}
+                        />
+                        <span className="text-sm">{value.label}</span>
+                      </div>
+                    ))}
+                    {formData.values.length === 0 && (
+                      <div className="text-sm text-muted-foreground">
+                        No options available
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
