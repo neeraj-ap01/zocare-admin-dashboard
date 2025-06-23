@@ -108,7 +108,10 @@ export function FieldConfigurationForm({
   };
 
   const updateFormData = (field: keyof FieldConfigurationData, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [field]: field === "values" ? value || [] : value,
+    }));
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
