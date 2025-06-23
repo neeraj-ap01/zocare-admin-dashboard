@@ -98,7 +98,7 @@ export function CreateFieldWorkflow({
   };
 
   return (
-    <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+    <DialogContent className="sm:max-w-[1000px] max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
           {currentStep === "select-type"
