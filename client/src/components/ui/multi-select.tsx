@@ -30,8 +30,8 @@ interface MultiSelectProps {
 }
 
 export function MultiSelect({
-  options,
-  selected,
+  options = [],
+  selected = [],
   onChange,
   placeholder = "Select options...",
   className,
@@ -39,19 +39,23 @@ export function MultiSelect({
   const [open, setOpen] = React.useState(false);
 
   const handleSelect = (value: string) => {
-    if (selected.includes(value)) {
-      onChange(selected.filter((item) => item !== value));
+    const currentSelected = selected || [];
+    if (currentSelected.includes(value)) {
+      onChange(currentSelected.filter((item) => item !== value));
     } else {
-      onChange([...selected, value]);
+      onChange([...currentSelected, value]);
     }
   };
 
   const handleRemove = (value: string) => {
-    onChange(selected.filter((item) => item !== value));
+    const currentSelected = selected || [];
+    onChange(currentSelected.filter((item) => item !== value));
   };
 
-  const selectedOptions = options.filter((option) =>
-    selected.includes(option.value),
+  const safeOptions = options || [];
+  const safeSelected = selected || [];
+  const selectedOptions = safeOptions.filter((option) =>
+    safeSelected.includes(option.value),
   );
 
   return (
@@ -104,7 +108,7 @@ export function MultiSelect({
           <CommandInput placeholder="Search options..." />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup className="max-h-64 overflow-auto">
-            {options.map((option) => (
+            {safeOptions.map((option) => (
               <CommandItem
                 key={option.value}
                 value={option.value}
@@ -113,7 +117,7 @@ export function MultiSelect({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    selected.includes(option.value)
+                    safeSelected.includes(option.value)
                       ? "opacity-100"
                       : "opacity-0",
                   )}

@@ -379,7 +379,7 @@ export function FieldConfigurationForm({
                 )}
                 {fieldType === "MULTISELECT" && (
                   <MultiSelect
-                    options={formData.values.map((value) => ({
+                    options={(formData.values || []).map((value) => ({
                       value: value.value,
                       label: value.label,
                     }))}
