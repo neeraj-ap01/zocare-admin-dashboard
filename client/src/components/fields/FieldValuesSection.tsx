@@ -4,6 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Plus, X, GripVertical } from "lucide-react";
 import { CreateFieldType } from "./FieldTypeSelector";
 
@@ -17,12 +24,16 @@ interface FieldValuesSectionProps {
   fieldType: CreateFieldType;
   values: FieldValue[];
   onChange: (values: FieldValue[]) => void;
+  defaultValue?: string;
+  onDefaultValueChange?: (value: string) => void;
 }
 
 export function FieldValuesSection({
   fieldType,
   values,
   onChange,
+  defaultValue,
+  onDefaultValueChange,
 }: FieldValuesSectionProps) {
   const [newValue, setNewValue] = useState("");
   const [newLabel, setNewLabel] = useState("");
@@ -190,6 +201,28 @@ export function FieldValuesSection({
             </div>
             <p className="text-xs text-muted-foreground">
               Press Enter or click + to add the value
+            </p>
+          </div>
+        )}
+
+        {/* Default Value for Dropdown */}
+        {fieldType === "DROPDOWN" && values.length > 0 && (
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Default value</Label>
+            <Select value={defaultValue} onValueChange={onDefaultValueChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="(Select a value)" />
+              </SelectTrigger>
+              <SelectContent>
+                {values.map((value) => (
+                  <SelectItem key={value.id} value={value.value}>
+                    {value.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Specifies which value the field has by default
             </p>
           </div>
         )}

@@ -15,12 +15,13 @@ interface FieldValue {
 }
 
 interface FieldConfigurationData {
-  name: string;
   label: string;
   description: string;
   required: boolean;
-  placeholder: string;
+  agentPermission: string;
+  customerPermission: string;
   values: FieldValue[];
+  defaultValue?: string;
 }
 
 interface CreateFieldWorkflowProps {
@@ -63,6 +64,15 @@ export function CreateFieldWorkflow({
   const handleFormSubmit = async (data: FieldConfigurationData) => {
     if (!selectedFieldType) return;
 
+    // Generate field name from label
+    const generateFieldName = (label: string): string => {
+      return label
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_|_$/g, "");
+    };
+
     // Convert our field values to the expected FieldOption format
     const options: FieldOption[] = data.values.map((value) => ({
       id: value.id,
@@ -72,13 +82,13 @@ export function CreateFieldWorkflow({
 
     // Prepare field data in the format expected by the API
     const fieldData = {
-      name: data.name,
+      name: generateFieldName(data.label),
       label: data.label,
       type: fieldTypeMapping[selectedFieldType],
       description: data.description,
       required: data.required,
-      placeholder: data.placeholder,
       options: options.length > 0 ? options : undefined,
+      defaultValue: data.defaultValue,
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
