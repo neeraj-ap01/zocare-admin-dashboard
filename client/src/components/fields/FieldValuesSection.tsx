@@ -80,13 +80,13 @@ export function FieldValuesSection({
     switch (fieldType) {
       case "DROPDOWN":
       case "MULTISELECT":
-        return "Field Values";
+        return "Field values";
       case "CHECKBOX":
-        return "Field Option";
+        return "Field option";
       case "RADIO":
-        return "Field Values";
+        return "Field values";
       default:
-        return "Field Values";
+        return "Field values";
     }
   };
 
@@ -97,7 +97,7 @@ export function FieldValuesSection({
       case "MULTISELECT":
         return "Add the options that users can select (multiple selections allowed)";
       case "CHECKBOX":
-        return "Set the option label for this checkbox";
+        return "Add a tag to the check to filter your views, triggers, and automations";
       case "RADIO":
         return "Add the radio button options that users can choose from";
       default:
@@ -170,25 +170,35 @@ export function FieldValuesSection({
         {(!isCheckboxType || values.length === 0) && (
           <div className="space-y-3">
             <Label className="text-sm font-medium">
-              Add {isCheckboxType ? "Option" : "New Value"}
+              {isCheckboxType ? "Tag (optional)" : "Add new value"}
             </Label>
             <div className="flex space-x-2">
-              <div className="flex-1 grid grid-cols-2 gap-2">
+              {isCheckboxType ? (
                 <Input
-                  placeholder="Value"
+                  placeholder="Tag (optional)"
                   value={newValue}
                   onChange={(e) => setNewValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="text-sm"
+                  className="text-sm flex-1"
                 />
-                <Input
-                  placeholder="Label (optional)"
-                  value={newLabel}
-                  onChange={(e) => setNewLabel(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="text-sm"
-                />
-              </div>
+              ) : (
+                <div className="flex-1 grid grid-cols-2 gap-2">
+                  <Input
+                    placeholder="Value"
+                    value={newValue}
+                    onChange={(e) => setNewValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="text-sm"
+                  />
+                  <Input
+                    placeholder="Label (optional)"
+                    value={newLabel}
+                    onChange={(e) => setNewLabel(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="text-sm"
+                  />
+                </div>
+              )}
               <Button
                 type="button"
                 variant="outline"
