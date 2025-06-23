@@ -122,8 +122,8 @@ export function FieldValuesSection({
   defaultValue,
   onDefaultValueChange,
 }: FieldValuesSectionProps) {
-  const [newValue, setNewValue] = useState("");
-  const [newLabel, setNewLabel] = useState("");
+  const [newValue, setNewValue] = React.useState("");
+  const [newLabel, setNewLabel] = React.useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
