@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { FieldValuesSection } from "./FieldValuesSection";
 import { CreateFieldType } from "./FieldTypeSelector";
 import { FieldType } from "@/types";
@@ -66,6 +67,14 @@ export function FieldConfigurationForm({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Preview state for interactive fields
+  const [previewText, setPreviewText] = useState("");
+  const [previewNumber, setPreviewNumber] = useState("");
+  const [previewDropdown, setPreviewDropdown] = useState("");
+  const [previewMultiSelect, setPreviewMultiSelect] = useState<string[]>([]);
+  const [previewCheckbox, setPreviewCheckbox] = useState(false);
+  const [previewRadio, setPreviewRadio] = useState("");
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -335,12 +344,27 @@ export function FieldConfigurationForm({
                 <Label className="text-sm font-medium">
                   {getPreviewLabel()}
                 </Label>
-                {fieldType === "TEXT" && <Input placeholder="Enter text..." />}
+                {fieldType === "TEXT" && (
+                  <Input
+                    placeholder="Enter text..."
+                    value={previewText}
+                    onChange={(e) => setPreviewText(e.target.value)}
+                  />
+                )}
                 {fieldType === "NUMBER" && (
-                  <Input type="number" placeholder="Enter number..." />
+                  <Input
+                    type="number"
+                    placeholder="Enter number..."
+                    value={previewNumber}
+                    onChange={(e) => setPreviewNumber(e.target.value)}
+                  />
                 )}
                 {fieldType === "DROPDOWN" && (
-                  <select className="w-full p-2 border rounded-md">
+                  <select
+                    className="w-full p-2 border rounded-md"
+                    value={previewDropdown}
+                    onChange={(e) => setPreviewDropdown(e.target.value)}
+                  >
                     <option value="">
                       {formData.defaultValue || "Select an option..."}
                     </option>
@@ -352,23 +376,23 @@ export function FieldConfigurationForm({
                   </select>
                 )}
                 {fieldType === "MULTISELECT" && (
-                  <select
-                    multiple
-                    className="w-full p-2 border rounded-md min-h-[80px]"
-                  >
-                    {formData.values.map((value) => (
-                      <option key={value.id} value={value.value}>
-                        {value.label}
-                      </option>
-                    ))}
-                    {formData.values.length === 0 && (
-                      <option disabled>No options available</option>
-                    )}
-                  </select>
+                  <MultiSelect
+                    options={formData.values.map((value) => ({
+                      value: value.value,
+                      label: value.label,
+                    }))}
+                    selected={previewMultiSelect}
+                    onChange={setPreviewMultiSelect}
+                    placeholder="Select multiple options..."
+                  />
                 )}
                 {fieldType === "CHECKBOX" && (
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      checked={previewCheckbox}
+                      onChange={(e) => setPreviewCheckbox(e.target.checked)}
+                    />
                     <span className="text-sm">
                       {formData.label || "Checkbox field"}
                     </span>
@@ -385,6 +409,8 @@ export function FieldConfigurationForm({
                           type="radio"
                           name="preview-radio"
                           value={value.value}
+                          checked={previewRadio === value.value}
+                          onChange={(e) => setPreviewRadio(e.target.value)}
                         />
                         <span className="text-sm">{value.label}</span>
                       </div>

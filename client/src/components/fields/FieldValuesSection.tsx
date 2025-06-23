@@ -1,4 +1,21 @@
 import React, { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +45,76 @@ interface FieldValuesSectionProps {
   onDefaultValueChange?: (value: string) => void;
 }
 
+interface SortableItemProps {
+  id: string;
+  value: FieldValue;
+  onUpdate: (id: string, field: "value" | "label", newVal: string) => void;
+  onRemove: (id: string) => void;
+  isCheckboxType: boolean;
+}
+
+function SortableItem({
+  id,
+  value,
+  onUpdate,
+  onRemove,
+  isCheckboxType,
+}: SortableItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center space-x-2 p-2 border rounded-md bg-muted/50"
+    >
+      <div {...attributes} {...listeners} className="cursor-move">
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      </div>
+      <div className="flex-1 grid grid-cols-2 gap-2">
+        <div>
+          <Input
+            placeholder="Value"
+            value={value.value}
+            onChange={(e) => onUpdate(id, "value", e.target.value)}
+            className="h-8 text-sm"
+          />
+        </div>
+        <div>
+          <Input
+            placeholder="Label (optional)"
+            value={value.label}
+            onChange={(e) => onUpdate(id, "label", e.target.value)}
+            className="h-8 text-sm"
+          />
+        </div>
+      </div>
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() => onRemove(id)}
+        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+      >
+        <X className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
 export function FieldValuesSection({
   fieldType,
   values,
@@ -37,6 +124,13 @@ export function FieldValuesSection({
 }: FieldValuesSectionProps) {
   const [newValue, setNewValue] = useState("");
   const [newLabel, setNewLabel] = useState("");
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   // Don't render for field types that don't need values
   if (fieldType === "TEXT" || fieldType === "NUMBER") {
@@ -67,6 +161,17 @@ export function FieldValuesSection({
     newVal: string,
   ) => {
     onChange(values.map((v) => (v.id === id ? { ...v, [field]: newVal } : v)));
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = values.findIndex((item) => item.id === active.id);
+      const newIndex = values.findIndex((item) => item.id === over?.id);
+
+      onChange(arrayMove(values, oldIndex, newIndex));
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -122,47 +227,29 @@ export function FieldValuesSection({
             <Label className="text-sm font-medium">
               {isCheckboxType ? "Option" : "Values"} ({values.length})
             </Label>
-            <div className="space-y-2">
-              {values.map((value, index) => (
-                <div
-                  key={value.id}
-                  className="flex items-center space-x-2 p-2 border rounded-md bg-muted/50"
-                >
-                  <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
-                  <div className="flex-1 grid grid-cols-2 gap-2">
-                    <div>
-                      <Input
-                        placeholder="Value"
-                        value={value.value}
-                        onChange={(e) =>
-                          updateValue(value.id, "value", e.target.value)
-                        }
-                        className="h-8 text-sm"
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        placeholder="Label (optional)"
-                        value={value.label}
-                        onChange={(e) =>
-                          updateValue(value.id, "label", e.target.value)
-                        }
-                        className="h-8 text-sm"
-                      />
-                    </div>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeValue(value.id)}
-                    className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={values.map((v) => v.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-2">
+                  {values.map((value) => (
+                    <SortableItem
+                      key={value.id}
+                      id={value.id}
+                      value={value}
+                      onUpdate={updateValue}
+                      onRemove={removeValue}
+                      isCheckboxType={isCheckboxType}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           </div>
         )}
 
