@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import * as React from "react";
 import {
   DialogContent,
   DialogHeader,
@@ -47,9 +47,10 @@ export function CreateFieldWorkflow({
   onCancel,
   isSubmitting = false,
 }: CreateFieldWorkflowProps) {
-  const [currentStep, setCurrentStep] = useState<WorkflowStep>("select-type");
+  const [currentStep, setCurrentStep] =
+    React.useState<WorkflowStep>("select-type");
   const [selectedFieldType, setSelectedFieldType] =
-    useState<CreateFieldType | null>(null);
+    React.useState<CreateFieldType | null>(null);
 
   const handleFieldTypeSelect = (type: CreateFieldType) => {
     setSelectedFieldType(type);
