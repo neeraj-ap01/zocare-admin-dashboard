@@ -373,7 +373,7 @@ export function FieldConfigurationForm({
                     <option value="">
                       {formData.defaultValue || "Select an option..."}
                     </option>
-                    {formData.values.map((value) => (
+                    {(formData.values || []).map((value) => (
                       <option key={value.id} value={value.value}>
                         {value.label}
                       </option>
@@ -409,7 +409,7 @@ export function FieldConfigurationForm({
                 )}
                 {fieldType === "RADIO" && (
                   <div className="space-y-2">
-                    {formData.values.map((value) => (
+                    {(formData.values || []).map((value) => (
                       <div
                         key={value.id}
                         className="flex items-center space-x-2"
@@ -424,7 +424,7 @@ export function FieldConfigurationForm({
                         <span className="text-sm">{value.label}</span>
                       </div>
                     ))}
-                    {formData.values.length === 0 && (
+                    {(formData.values || []).length === 0 && (
                       <div className="text-sm text-muted-foreground">
                         No options available
                       </div>
