@@ -108,23 +108,27 @@ export function MultiSelect({
           <CommandInput placeholder="Search options..." />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup className="max-h-64 overflow-auto">
-            {safeOptions.map((option) => (
-              <CommandItem
-                key={option.value}
-                value={option.value}
-                onSelect={() => handleSelect(option.value)}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    safeSelected.includes(option.value)
-                      ? "opacity-100"
-                      : "opacity-0",
-                  )}
-                />
-                {option.label}
-              </CommandItem>
-            ))}
+            {safeOptions.length > 0 ? (
+              safeOptions.map((option) => (
+                <CommandItem
+                  key={option.value || Math.random()}
+                  value={option.value || ""}
+                  onSelect={() => handleSelect(option.value)}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      safeSelected.includes(option.value)
+                        ? "opacity-100"
+                        : "opacity-0",
+                    )}
+                  />
+                  {option.label || option.value || "Option"}
+                </CommandItem>
+              ))
+            ) : (
+              <CommandItem disabled>No options available</CommandItem>
+            )}
           </CommandGroup>
         </Command>
       </PopoverContent>
