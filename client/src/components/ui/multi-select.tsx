@@ -36,7 +36,7 @@ export function MultiSelect({
   placeholder = "Select options...",
   className,
 }: MultiSelectProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const handleSelect = (value: string) => {
     if (selected.includes(value)) {
