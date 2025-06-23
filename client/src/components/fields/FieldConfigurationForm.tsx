@@ -380,12 +380,16 @@ export function FieldConfigurationForm({
                 {fieldType === "MULTISELECT" && (
                   <MultiSelect
                     options={(formData.values || []).map((value) => ({
-                      value: value.value,
-                      label: value.label,
+                      value: value.value || "",
+                      label: value.label || value.value || "",
                     }))}
-                    selected={previewMultiSelect}
+                    selected={previewMultiSelect || []}
                     onChange={setPreviewMultiSelect}
-                    placeholder="Select multiple options..."
+                    placeholder={
+                      formData.values?.length > 0
+                        ? "Select multiple options..."
+                        : "Add values first"
+                    }
                   />
                 )}
                 {fieldType === "CHECKBOX" && (
