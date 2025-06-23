@@ -56,7 +56,7 @@ export function FieldConfigurationForm({
   onCancel,
   isSubmitting = false,
 }: FieldConfigurationFormProps) {
-  const [formData, setFormData] = useState<FieldConfigurationData>({
+  const [formData, setFormData] = React.useState<FieldConfigurationData>({
     label: "",
     description: "",
     required: false,
@@ -66,15 +66,17 @@ export function FieldConfigurationForm({
     defaultValue: "",
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   // Preview state for interactive fields
-  const [previewText, setPreviewText] = useState("");
-  const [previewNumber, setPreviewNumber] = useState("");
-  const [previewDropdown, setPreviewDropdown] = useState("");
-  const [previewMultiSelect, setPreviewMultiSelect] = useState<string[]>([]);
-  const [previewCheckbox, setPreviewCheckbox] = useState(false);
-  const [previewRadio, setPreviewRadio] = useState("");
+  const [previewText, setPreviewText] = React.useState("");
+  const [previewNumber, setPreviewNumber] = React.useState("");
+  const [previewDropdown, setPreviewDropdown] = React.useState("");
+  const [previewMultiSelect, setPreviewMultiSelect] = React.useState<string[]>(
+    [],
+  );
+  const [previewCheckbox, setPreviewCheckbox] = React.useState(false);
+  const [previewRadio, setPreviewRadio] = React.useState("");
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
