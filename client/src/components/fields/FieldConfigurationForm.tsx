@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
 import { FieldValuesSection } from "./FieldValuesSection";
 import { CreateFieldType } from "./FieldTypeSelector";
 import { FieldType } from "@/types";
@@ -381,7 +381,7 @@ export function FieldConfigurationForm({
                   </select>
                 )}
                 {fieldType === "MULTISELECT" && (
-                  <MultiSelect
+                  <MultiSelectDropdown
                     options={(formData.values || []).map((value) => ({
                       value: value.value || "",
                       label: value.label || value.value || "",
