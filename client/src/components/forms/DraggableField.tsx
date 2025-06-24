@@ -1,9 +1,6 @@
 import React from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   GripVertical,
   Type,
