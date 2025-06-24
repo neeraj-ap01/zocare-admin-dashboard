@@ -17,22 +17,22 @@ import {
   Hash,
   Plus,
   Search,
-  Building,
-  MapPin,
-  Phone,
-  Mail,
+  ChevronDown,
+  Circle,
+  List,
+  Calendar,
 } from "lucide-react";
 import { FormField } from "./DraggableField";
 import { cn } from "@/lib/utils";
 
 const availableFields: Omit<FormField, "id">[] = [
   {
-    type: "select",
+    type: "dropdown",
     label: "Action Set - TRD",
     placeholder: "Select action",
   },
   {
-    type: "select",
+    type: "dropdown",
     label: "Assignee",
     placeholder: "Select assignee",
   },
@@ -42,7 +42,7 @@ const availableFields: Omit<FormField, "id">[] = [
     placeholder: "Enter business area",
   },
   {
-    type: "select",
+    type: "dropdown",
     label: "Category Identifier",
     placeholder: "Select category",
   },
@@ -67,8 +67,11 @@ const fieldIcons = {
   text: Type,
   textarea: AlignLeft,
   checkbox: CheckSquare,
-  select: Users,
+  dropdown: ChevronDown,
+  multiselect: List,
+  radio: Circle,
   number: Hash,
+  date: Calendar,
 };
 
 interface FieldSuggestionPanelProps {

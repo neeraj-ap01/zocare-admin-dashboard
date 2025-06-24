@@ -6,8 +6,11 @@ import {
   Type,
   AlignLeft,
   CheckSquare,
-  Users,
+  ChevronDown,
+  List,
+  Circle,
   Hash,
+  Calendar,
   X,
   Lock,
 } from "lucide-react";
@@ -15,7 +18,15 @@ import { cn } from "@/lib/utils";
 
 export interface FormField {
   id: string;
-  type: "text" | "textarea" | "checkbox" | "select" | "number";
+  type:
+    | "text"
+    | "textarea"
+    | "checkbox"
+    | "dropdown"
+    | "multiselect"
+    | "radio"
+    | "number"
+    | "date";
   label: string;
   placeholder?: string;
   required?: boolean;
@@ -35,8 +46,11 @@ const fieldIcons = {
   text: Type,
   textarea: AlignLeft,
   checkbox: CheckSquare,
-  select: Users,
+  dropdown: ChevronDown,
+  multiselect: List,
+  radio: Circle,
   number: Hash,
+  date: Calendar,
 };
 
 export function DraggableField({
