@@ -34,13 +34,14 @@ import { DataTable } from "@/components/common/DataTable";
 import { EmptyState } from "@/components/common/EmptyState";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { CreateView } from "@/components/views";
 import {
   useViews,
   useCreateView,
   useUpdateView,
   useDeleteView,
 } from "@/hooks/useApi";
-import { View } from "@/types";
+import { View, FilterCondition } from "@/types";
 import {
   Plus,
   MoreHorizontal,
@@ -54,8 +55,22 @@ import {
   Settings,
 } from "lucide-react";
 
+interface ViewFormData {
+  title: string;
+  description: string;
+  whoHasAccess: string;
+  conditions: {
+    allConditions: FilterCondition[];
+    anyConditions: FilterCondition[];
+  };
+  columns: Array<{ id: string; label: string; type: string }>;
+  groupBy: string;
+  orderBy: string;
+  sortDirection: "asc" | "desc";
+}
+
 export default function Views() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "create" | "edit">("list");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingView, setEditingView] = useState<View | null>(null);
 
@@ -184,24 +199,30 @@ export default function Views() {
     },
   ];
 
-  const handleCreateView = async (formData: FormData) => {
-    const data = Object.fromEntries(formData.entries());
+  const handleCreateView = async (viewData: ViewFormData) => {
     try {
+      // Convert form data to API format
+      const allFilters = [
+        ...viewData.conditions.allConditions,
+        ...viewData.conditions.anyConditions,
+      ];
+
       await createViewMutation.mutateAsync({
-        name: data.name as string,
-        description: data.description as string,
-        filters: [],
-        sortBy: "createdAt",
-        sortOrder: "desc" as const,
-        columnsVisible: ["title", "priority", "assignee", "createdAt"],
-        isPublic: data.isPublic === "on",
-        isDefault: data.isDefault === "on",
+        name: viewData.title,
+        description: viewData.description,
+        filters: allFilters,
+        sortBy: viewData.orderBy,
+        sortOrder: viewData.sortDirection,
+        columnsVisible: viewData.columns.map((col) => col.id),
+        isPublic: viewData.whoHasAccess !== "only_me",
+        isDefault: false, // Default can be set later
+        groupBy: viewData.groupBy === "none" ? undefined : viewData.groupBy,
         divisionId: "1", // Default division
         createdBy: "1", // Current user
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      setIsCreateDialogOpen(false);
+      setViewMode("list");
     } catch (error) {
       console.error("Failed to create view:", error);
     }
@@ -235,6 +256,17 @@ export default function Views() {
     );
   }
 
+  // Show create view mode
+  if (viewMode === "create") {
+    return (
+      <CreateView
+        onBack={() => setViewMode("list")}
+        onSave={handleCreateView}
+        isLoading={createViewMutation.isPending}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -242,79 +274,13 @@ export default function Views() {
         description="Create custom ticket list views with filters and sorting"
         badge={{ text: `${views?.length || 0} views` }}
         actions={
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}
+          <Button
+            onClick={() => setViewMode("create")}
+            className="bg-zocare hover:bg-zocare-dark"
           >
-            <DialogTrigger asChild>
-              <Button className="bg-zocare hover:bg-zocare-dark">
-                <Plus className="mr-2 h-4 w-4" />
-                Create View
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New View</DialogTitle>
-                <DialogDescription>
-                  Create a custom view to filter and organize tickets.
-                </DialogDescription>
-              </DialogHeader>
-              <form action={handleCreateView} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">View Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="e.g., Open Tickets, High Priority"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Describe what this view shows"
-                  />
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch id="isPublic" name="isPublic" />
-                    <Label htmlFor="isPublic">Public view</Label>
-                    <span className="text-xs text-muted-foreground">
-                      (visible to all users)
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch id="isDefault" name="isDefault" />
-                    <Label htmlFor="isDefault">Set as default</Label>
-                    <span className="text-xs text-muted-foreground">
-                      (default view for new users)
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsCreateDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={createViewMutation.isPending}
-                    className="bg-zocare hover:bg-zocare-dark"
-                  >
-                    {createViewMutation.isPending && (
-                      <LoadingSpinner size="sm" className="mr-2" />
-                    )}
-                    Create View
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+            <Plus className="mr-2 h-4 w-4" />
+            Create View
+          </Button>
         }
       />
 
@@ -329,7 +295,7 @@ export default function Views() {
           description="Get started by creating your first custom ticket view"
           action={{
             label: "Create View",
-            onClick: () => setIsCreateDialogOpen(true),
+            onClick: () => setViewMode("create"),
           }}
         />
       ) : (
