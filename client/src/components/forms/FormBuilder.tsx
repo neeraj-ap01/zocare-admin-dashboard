@@ -24,7 +24,17 @@ import { DraggableField, FormField } from "./DraggableField";
 import { FieldSuggestionPanel } from "./FieldSuggestionPanel";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { GripVertical } from "lucide-react";
+import {
+  GripVertical,
+  Type,
+  AlignLeft,
+  CheckSquare,
+  ChevronDown,
+  List,
+  Circle,
+  Hash,
+  Calendar,
+} from "lucide-react";
 
 interface FormBuilderProps {
   onBack: () => void;
@@ -134,7 +144,13 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
   };
 
   const handleAddField = (field: FormField) => {
-    setFields((prev) => [...prev, field]);
+    // Check if field with same label already exists
+    const fieldExists = fields.some(
+      (existingField) => existingField.label === field.label,
+    );
+    if (!fieldExists) {
+      setFields((prev) => [...prev, field]);
+    }
   };
 
   const handleRemoveField = (fieldId: string) => {
@@ -229,16 +245,43 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
             </div>
           </div>
 
-          <FieldSuggestionPanel onAddField={handleAddField} />
+          <FieldSuggestionPanel
+            onAddField={handleAddField}
+            addedFieldLabels={fields.map((field) => field.label)}
+          />
         </div>
 
         <DragOverlay dropAnimation={dropAnimationConfig}>
-          {activeField ? (
-            <div className="bg-white border rounded-lg p-4 shadow-lg opacity-90">
+          {activeId ? (
+            <div className="bg-white border-2 border-blue-400 rounded-lg p-4 shadow-xl">
               <div className="flex items-center gap-3">
                 <GripVertical className="h-4 w-4 text-gray-400" />
-                <div className="w-4 h-4 bg-gray-400 rounded" />
-                <span className="text-sm font-medium">{activeField.label}</span>
+                {activeField ? (
+                  <>
+                    {(() => {
+                      const fieldIcons = {
+                        text: Type,
+                        textarea: AlignLeft,
+                        checkbox: CheckSquare,
+                        dropdown: ChevronDown,
+                        multiselect: List,
+                        radio: Circle,
+                        number: Hash,
+                        date: Calendar,
+                      };
+                      const Icon = fieldIcons[activeField.type];
+                      return <Icon className="h-4 w-4 text-gray-500" />;
+                    })()}
+                    <span className="text-sm font-medium">
+                      {activeField.label}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-4 h-4 bg-gray-400 rounded" />
+                    <span className="text-sm font-medium">Field</span>
+                  </>
+                )}
               </div>
             </div>
           ) : null}
