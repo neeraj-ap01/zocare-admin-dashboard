@@ -96,6 +96,14 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
+
+    // Add visual feedback when dragging suggestion field over form area
+    if (
+      active.id.toString().startsWith("suggestion-") &&
+      over.id === "form-fields"
+    ) {
+      // Visual feedback will be handled by CSS hover states
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -224,7 +232,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
 
               <div
                 id="form-fields"
-                className="space-y-2 min-h-[200px] p-4 border-2 border-dashed border-gray-200 rounded-lg bg-white/50"
+                className="space-y-2 min-h-[200px] p-4 border-2 border-dashed border-gray-200 rounded-lg bg-white/50 transition-all duration-200 hover:border-blue-300 hover:bg-blue-50/30"
               >
                 <SortableContext
                   items={fields.map((field) => field.id)}

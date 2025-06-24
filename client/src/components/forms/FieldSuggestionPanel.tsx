@@ -76,6 +76,7 @@ const fieldIcons = {
 
 interface FieldSuggestionPanelProps {
   onAddField: (field: FormField) => void;
+  addedFieldLabels: string[];
 }
 
 interface DraggableSuggestionFieldProps {
@@ -117,8 +118,9 @@ function DraggableSuggestionField({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group cursor-grab active:cursor-grabbing",
-        isDragging && "opacity-50",
+        "flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group cursor-grab active:cursor-grabbing transition-all duration-200",
+        isDragging && "opacity-30 scale-95 border-blue-400",
+        !isDragging && "hover:border-gray-300",
       )}
       {...attributes}
       {...listeners}
@@ -142,13 +144,17 @@ function DraggableSuggestionField({
 
 export function FieldSuggestionPanel({
   onAddField,
+  addedFieldLabels,
 }: FieldSuggestionPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name");
 
   const filteredAndSortedFields = useMemo(() => {
-    let filtered = availableFields.filter((field) =>
-      field.label.toLowerCase().includes(searchTerm.toLowerCase()),
+    // First filter out fields that are already added to the form
+    let filtered = availableFields.filter(
+      (field) =>
+        !addedFieldLabels.includes(field.label) &&
+        field.label.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     if (sortBy === "name") {
@@ -161,7 +167,7 @@ export function FieldSuggestionPanel({
     }
 
     return filtered;
-  }, [searchTerm, sortBy]);
+  }, [searchTerm, sortBy, addedFieldLabels]);
 
   return (
     <div className="w-80 bg-white border-l">
