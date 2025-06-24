@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { ThemeProvider } from "@/components/common/ThemeProvider";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
 // Import all pages
@@ -34,27 +35,29 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<DashboardLayout />}>
-                <Route index element={<Dashboard />} />
-                <Route path="fields" element={<Fields />} />
-                <Route path="forms" element={<Forms />} />
-                <Route path="team-members" element={<TeamMembers />} />
-                <Route path="groups" element={<Groups />} />
-                <Route path="tags" element={<Tags />} />
-                <Route path="views" element={<Views />} />
-              </Route>
-              {/* Catch-all route for 404 pages */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-          <Toaster />
-          <SonnerToaster />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<DashboardLayout />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="fields" element={<Fields />} />
+                  <Route path="forms" element={<Forms />} />
+                  <Route path="team-members" element={<TeamMembers />} />
+                  <Route path="groups" element={<Groups />} />
+                  <Route path="tags" element={<Tags />} />
+                  <Route path="views" element={<Views />} />
+                </Route>
+                {/* Catch-all route for 404 pages */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+            <Toaster />
+            <SonnerToaster />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };
