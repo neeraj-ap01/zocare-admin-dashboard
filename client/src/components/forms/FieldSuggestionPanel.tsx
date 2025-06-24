@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useDraggable } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,14 +13,14 @@ import {
   Type,
   AlignLeft,
   CheckSquare,
-  Users,
+  ChevronDown,
+  List,
+  Circle,
   Hash,
+  Calendar,
   Plus,
   Search,
-  ChevronDown,
-  Circle,
-  List,
-  Calendar,
+  GripVertical,
 } from "lucide-react";
 import { FormField } from "./DraggableField";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,67 @@ interface FieldSuggestionPanelProps {
   onAddField: (field: FormField) => void;
 }
 
+interface DraggableSuggestionFieldProps {
+  field: Omit<FormField, "id">;
+  index: number;
+  onAddField: (field: FormField) => void;
+}
+
+function DraggableSuggestionField({
+  field,
+  index,
+  onAddField,
+}: DraggableSuggestionFieldProps) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `suggestion-${field.label}-${index}`,
+    data: {
+      field,
+    },
+  });
+
+  const Icon = fieldIcons[field.type];
+
+  const generateFieldId = () => {
+    return `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  const handleAddField = () => {
+    const newField: FormField = {
+      ...field,
+      id: generateFieldId(),
+      isDefault: false,
+      editable: true,
+    };
+    onAddField(newField);
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={cn(
+        "flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group transition-all duration-200 cursor-grab active:cursor-grabbing",
+        isDragging && "opacity-50 scale-105 shadow-lg",
+      )}
+      {...attributes}
+      {...listeners}
+    >
+      <div className="flex items-center gap-3 flex-1">
+        <GripVertical className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <Icon className="h-4 w-4 text-gray-500" />
+        <span className="text-sm font-medium">{field.label}</span>
+      </div>
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={handleAddField}
+        className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-100 hover:text-blue-600"
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
 export function FieldSuggestionPanel({
   onAddField,
 }: FieldSuggestionPanelProps) {
@@ -99,20 +161,6 @@ export function FieldSuggestionPanel({
 
     return filtered;
   }, [searchTerm, sortBy]);
-
-  const generateFieldId = () => {
-    return `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  };
-
-  const handleAddField = (fieldTemplate: Omit<FormField, "id">) => {
-    const newField: FormField = {
-      ...fieldTemplate,
-      id: generateFieldId(),
-      isDefault: false,
-      editable: true,
-    };
-    onAddField(newField);
-  };
 
   return (
     <div className="w-80 bg-white border-l">
@@ -155,28 +203,17 @@ export function FieldSuggestionPanel({
           </div>
         ) : (
           <div className="space-y-2">
-            {filteredAndSortedFields.map((field, index) => {
-              const Icon = fieldIcons[field.type];
-              return (
-                <div
-                  key={`${field.label}-${index}`}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <Icon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium">{field.label}</span>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleAddField(field)}
-                    className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              );
-            })}
+            <p className="text-xs text-gray-500 mb-3">
+              Drag fields to the form or click + to add
+            </p>
+            {filteredAndSortedFields.map((field, index) => (
+              <DraggableSuggestionField
+                key={`${field.label}-${index}`}
+                field={field}
+                index={index}
+                onAddField={onAddField}
+              />
+            ))}
           </div>
         )}
       </div>
