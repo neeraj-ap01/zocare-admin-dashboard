@@ -358,14 +358,18 @@ export function FieldValuesSection({
             <div className="space-y-2 pt-2 border-t">
               <Label className="text-sm font-medium">Default value</Label>
               <Select
-                value={defaultValue || ""}
-                onValueChange={onDefaultValueChange}
+                value={defaultValue || "__no_default__"}
+                onValueChange={(value) =>
+                  onDefaultValueChange(value === "__no_default__" ? "" : value)
+                }
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select default value (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No default value</SelectItem>
+                  <SelectItem value="__no_default__">
+                    No default value
+                  </SelectItem>
                   {values.map((value) => (
                     <SelectItem key={value.id} value={value.value}>
                       {value.label}
