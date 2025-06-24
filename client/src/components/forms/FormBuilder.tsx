@@ -40,11 +40,27 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const items = Array.from(fields);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    // Handle drag from suggestion panel to form
+    if (
+      result.source.droppableId === "field-suggestions" &&
+      result.destination.droppableId === "form-fields"
+    ) {
+      const suggestionIndex = result.source.index;
+      // You'd need to get the field from FieldSuggestionPanel context here
+      // For now, this will be handled by the existing add field mechanism
+      return;
+    }
 
-    setFields(items);
+    // Handle reordering within form fields
+    if (
+      result.source.droppableId === "form-fields" &&
+      result.destination.droppableId === "form-fields"
+    ) {
+      const items = Array.from(fields);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      setFields(items);
+    }
   };
 
   const handleAddField = (field: FormField) => {
