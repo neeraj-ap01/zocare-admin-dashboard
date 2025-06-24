@@ -8,8 +8,6 @@ import { cn } from "@/lib/utils";
 interface FormHeaderProps {
   formName: string;
   onFormNameChange: (name: string) => void;
-  isEditableForEndUsers: boolean;
-  onEditableForEndUsersChange: (editable: boolean) => void;
   onBack: () => void;
   isActive?: boolean;
 }
@@ -17,8 +15,6 @@ interface FormHeaderProps {
 export function FormHeader({
   formName,
   onFormNameChange,
-  isEditableForEndUsers,
-  onEditableForEndUsersChange,
   onBack,
   isActive = true,
 }: FormHeaderProps) {
@@ -88,25 +84,9 @@ export function FormHeader({
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="editable-for-end-users"
-            checked={isEditableForEndUsers}
-            onCheckedChange={onEditableForEndUsersChange}
-          />
-          <label
-            htmlFor="editable-for-end-users"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Editable for end users
-          </label>
-        </div>
-
-        <div className="flex gap-2">
-          <Button variant="outline">Cancel</Button>
-          <Button className="bg-blue-600 hover:bg-blue-700">Save</Button>
-        </div>
+      <div className="flex gap-2">
+        <Button variant="outline">Cancel</Button>
+        <Button className="bg-blue-600 hover:bg-blue-700">Save</Button>
       </div>
     </div>
   );
