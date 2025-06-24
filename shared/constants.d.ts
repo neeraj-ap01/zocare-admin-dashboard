@@ -1,0 +1,103 @@
+export declare const API_BASE_URL: string;
+export declare const API_VERSION = "v1";
+export declare const API_ENDPOINTS: {
+    readonly HEALTH: "/health";
+    readonly DASHBOARD_STATS: "/dashboard/stats";
+    readonly RECENT_ACTIVITY: "/dashboard/activity";
+    readonly FIELDS: "/fields";
+    readonly FIELD_BY_ID: (id: string) => string;
+    readonly FORMS: "/forms";
+    readonly FORM_BY_ID: (id: string) => string;
+    readonly FORM_FIELDS: (id: string) => string;
+    readonly USERS: "/users";
+    readonly USER_BY_ID: (id: string) => string;
+    readonly GROUPS: "/groups";
+    readonly GROUP_BY_ID: (id: string) => string;
+    readonly GROUP_MEMBERS: (id: string) => string;
+    readonly TAGS: "/tags";
+    readonly TAG_BY_ID: (id: string) => string;
+    readonly VIEWS: "/views";
+    readonly VIEW_BY_ID: (id: string) => string;
+    readonly DIVISIONS: "/divisions";
+    readonly DIVISION_BY_ID: (id: string) => string;
+};
+export declare const HTTP_STATUS: {
+    readonly OK: 200;
+    readonly CREATED: 201;
+    readonly NO_CONTENT: 204;
+    readonly BAD_REQUEST: 400;
+    readonly UNAUTHORIZED: 401;
+    readonly FORBIDDEN: 403;
+    readonly NOT_FOUND: 404;
+    readonly CONFLICT: 409;
+    readonly UNPROCESSABLE_ENTITY: 422;
+    readonly INTERNAL_SERVER_ERROR: 500;
+    readonly SERVICE_UNAVAILABLE: 503;
+};
+export declare const ERROR_CODES: {
+    readonly VALIDATION_ERROR: "VALIDATION_ERROR";
+    readonly NOT_FOUND: "NOT_FOUND";
+    readonly DUPLICATE_ENTRY: "DUPLICATE_ENTRY";
+    readonly UNAUTHORIZED: "UNAUTHORIZED";
+    readonly FORBIDDEN: "FORBIDDEN";
+    readonly INTERNAL_ERROR: "INTERNAL_ERROR";
+    readonly SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE";
+};
+export declare const PAGINATION: {
+    readonly DEFAULT_PAGE: 1;
+    readonly DEFAULT_LIMIT: 20;
+    readonly MAX_LIMIT: 100;
+};
+export declare const FIELD_TYPES: {
+    readonly TEXT: "text";
+    readonly TEXTAREA: "textarea";
+    readonly NUMBER: "number";
+    readonly EMAIL: "email";
+    readonly PHONE: "phone";
+    readonly DATE: "date";
+    readonly DATETIME: "datetime";
+    readonly SELECT: "select";
+    readonly MULTISELECT: "multiselect";
+    readonly CHECKBOX: "checkbox";
+    readonly RADIO: "radio";
+    readonly FILE: "file";
+    readonly URL: "url";
+};
+export declare const USER_ROLES: {
+    readonly ADMIN: "admin";
+    readonly MANAGER: "manager";
+    readonly AGENT: "agent";
+    readonly VIEWER: "viewer";
+};
+export declare const FILTER_OPERATORS: {
+    readonly EQUALS: "equals";
+    readonly NOT_EQUALS: "not_equals";
+    readonly CONTAINS: "contains";
+    readonly NOT_CONTAINS: "not_contains";
+    readonly STARTS_WITH: "starts_with";
+    readonly ENDS_WITH: "ends_with";
+    readonly GREATER_THAN: "greater_than";
+    readonly LESS_THAN: "less_than";
+    readonly GREATER_EQUAL: "greater_equal";
+    readonly LESS_EQUAL: "less_equal";
+    readonly IS_EMPTY: "is_empty";
+    readonly IS_NOT_EMPTY: "is_not_empty";
+    readonly IN: "in";
+    readonly NOT_IN: "not_in";
+};
+export declare const CACHE_KEYS: {
+    readonly FIELDS: "fields";
+    readonly FORMS: "forms";
+    readonly USERS: "users";
+    readonly GROUPS: "groups";
+    readonly TAGS: "tags";
+    readonly VIEWS: "views";
+    readonly DASHBOARD_STATS: "dashboard:stats";
+    readonly RECENT_ACTIVITY: "dashboard:activity";
+};
+export declare const CACHE_TTL: {
+    readonly SHORT: 60;
+    readonly MEDIUM: 300;
+    readonly LONG: 3600;
+    readonly VERY_LONG: 86400;
+};
