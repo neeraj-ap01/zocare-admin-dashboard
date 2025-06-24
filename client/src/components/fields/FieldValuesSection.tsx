@@ -31,6 +31,7 @@ import {
 import { Plus, X, GripVertical } from "lucide-react";
 import { CreateFieldType } from "./FieldTypeSelector";
 import { CsvUpload } from "./CsvUpload";
+import { cn } from "@/lib/utils";
 
 interface FieldValue {
   id: string;
@@ -49,7 +50,7 @@ interface FieldValuesSectionProps {
 interface SortableItemProps {
   id: string;
   value: FieldValue;
-  onUpdate: (id: string, field: "value" | "label", newVal: string) => void;
+  onUpdate: (id: string, field: "value" | "label", value: string) => void;
   onRemove: (id: string) => void;
   isCheckboxType: boolean;
 }
@@ -73,42 +74,62 @@ function SortableItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.8 : 1,
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center space-x-2 p-2 border rounded-md bg-muted/50"
+      {...attributes}
+      className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-2 bg-muted/50 rounded-md border"
     >
-      <div {...attributes} {...listeners} className="cursor-move">
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 cursor-grab active:cursor-grabbing shrink-0"
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => onRemove(id)}
+          className="h-8 w-8 p-0 text-destructive hover:text-destructive shrink-0 sm:hidden"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
-      <div className="flex-1 grid grid-cols-2 gap-2">
-        <div>
+
+      <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="w-full">
           <Input
             placeholder="Value"
             value={value.value}
             onChange={(e) => onUpdate(id, "value", e.target.value)}
-            className="h-8 text-sm"
+            className="h-8 text-sm w-full"
           />
         </div>
-        <div>
+        <div className="w-full">
           <Input
-            placeholder="Label (optional)"
+            placeholder={isCheckboxType ? "Tag (optional)" : "Label"}
             value={value.label}
             onChange={(e) => onUpdate(id, "label", e.target.value)}
-            className="h-8 text-sm"
+            className="h-8 text-sm w-full"
           />
         </div>
       </div>
+
       <Button
         type="button"
         variant="ghost"
         size="sm"
         onClick={() => onRemove(id)}
-        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+        className="hidden sm:flex h-8 w-8 p-0 text-destructive hover:text-destructive shrink-0"
       >
         <X className="h-4 w-4" />
       </Button>
@@ -223,9 +244,9 @@ export function FieldValuesSection({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardTitle className="text-base">{getSectionTitle()}</CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {getSectionDescription()}
         </p>
       </CardHeader>
@@ -250,9 +271,10 @@ export function FieldValuesSection({
             </div>
           </>
         )}
+
         {/* Existing Values */}
         {values.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label className="text-sm font-medium">
               {isCheckboxType ? "Option" : "Values"} ({values.length})
             </Label>
@@ -288,84 +310,75 @@ export function FieldValuesSection({
             <Label className="text-sm font-medium">
               {isCheckboxType ? "Tag (optional)" : "Add new value"}
             </Label>
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               {isCheckboxType ? (
                 <Input
                   placeholder="Tag (optional)"
                   value={newValue}
                   onChange={(e) => setNewValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="text-sm flex-1"
+                  className="text-sm flex-1 w-full"
                 />
               ) : (
-                <div className="flex-1 grid grid-cols-2 gap-2">
+                <>
                   <Input
                     placeholder="Value"
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="text-sm"
+                    className="text-sm flex-1 w-full"
                   />
                   <Input
-                    placeholder="Label (optional)"
+                    placeholder="Label"
                     value={newLabel}
                     onChange={(e) => setNewLabel(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="text-sm"
+                    className="text-sm flex-1 w-full"
                   />
-                </div>
+                </>
               )}
               <Button
                 type="button"
-                variant="outline"
-                size="sm"
                 onClick={addValue}
+                size="sm"
                 disabled={!newValue.trim()}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto shrink-0"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-4 w-4 mr-2 sm:mr-0" />
+                <span className="sm:hidden">Add Value</span>
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Press Enter or click + to add the value
-            </p>
           </div>
         )}
 
-        {/* Default Value for Dropdown */}
-        {fieldType === "DROPDOWN" && values.length > 0 && (
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Default value</Label>
-            <Select value={defaultValue} onValueChange={onDefaultValueChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="(Select a value)" />
-              </SelectTrigger>
-              <SelectContent>
-                {values.map((value) => (
-                  <SelectItem key={value.id} value={value.value}>
-                    {value.label}
+        {/* Default Value Selection */}
+        {(fieldType === "DROPDOWN" || fieldType === "RADIO") &&
+          values.length > 0 &&
+          onDefaultValueChange && (
+            <div className="space-y-2 pt-2 border-t">
+              <Label className="text-sm font-medium">Default value</Label>
+              <Select
+                value={defaultValue || "__no_default__"}
+                onValueChange={(value) =>
+                  onDefaultValueChange(value === "__no_default__" ? "" : value)
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select default value (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__no_default__">
+                    No default value
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Specifies which value the field has by default
-            </p>
-          </div>
-        )}
-
-        {/* Validation for required values */}
-        {!isCheckboxType && values.length === 0 && (
-          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-            💡 This field type requires at least one value to be functional
-          </div>
-        )}
-
-        {isCheckboxType && values.length > 1 && (
-          <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
-            ⚠️ Checkbox fields typically have only one option. Consider using
-            Radio or Multi-select for multiple options.
-          </div>
-        )}
+                  {values.map((value) => (
+                    <SelectItem key={value.id} value={value.value}>
+                      {value.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
       </CardContent>
     </Card>
   );

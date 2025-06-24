@@ -4,96 +4,136 @@
 
 @layer base {
   /**
-   * Tailwind CSS theme
-   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
-   * A different format will require also updating the theme in tailwind.config.ts.
-  */
+   * ZoCare Theme System
+   * Based on primary color #00AEEF with comprehensive light/dark mode support
+   * All colors are expressed as HSL values for better control and consistency
+   */
   :root {
+    /* Base colors */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
+    /* Card colors */
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
 
+    /* Popover colors */
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 20% 98%;
+    /* Primary colors - Based on #00AEEF (194°, 100%, 47%) */
+    --primary: 194 100% 47%;
+    --primary-foreground: 0 0% 98%;
+    --primary-50: 194 100% 97%;
+    --primary-100: 194 100% 93%;
+    --primary-200: 194 100% 87%;
+    --primary-300: 194 100% 77%;
+    --primary-400: 194 100% 62%;
+    --primary-500: 194 100% 47%;
+    --primary-600: 194 100% 37%;
+    --primary-700: 194 100% 27%;
+    --primary-800: 194 100% 20%;
+    --primary-900: 194 80% 15%;
+    --primary-950: 194 60% 10%;
 
+    /* Secondary colors */
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
 
+    /* Muted colors */
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
 
+    /* Accent colors */
     --accent: 220 14.3% 95.9%;
     --accent-foreground: 220.9 39.3% 11%;
 
+    /* Destructive colors */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
 
+    /* Border and input colors */
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 262 83% 58%;
+    --ring: 194 100% 47%;
 
+    /* Border radius */
     --radius: 0.75rem;
 
-    --sidebar-background: 240 10% 3.9%;
-    --sidebar-foreground: 240 9% 89%;
-    --sidebar-primary: 262 83% 58%;
-    --sidebar-primary-foreground: 210 20% 98%;
-    --sidebar-accent: 240 6% 12%;
-    --sidebar-accent-foreground: 240 9% 89%;
-    --sidebar-border: 240 6% 12%;
-    --sidebar-ring: 262 83% 58%;
+    /* Sidebar colors */
+    --sidebar-background: 194 15% 8%;
+    --sidebar-foreground: 194 5% 89%;
+    --sidebar-primary: 194 100% 47%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 194 15% 12%;
+    --sidebar-accent-foreground: 194 5% 89%;
+    --sidebar-border: 194 15% 12%;
+    --sidebar-ring: 194 100% 47%;
 
     /* ZoCare brand colors */
-    --zocare-brand: 262 83% 58%;
-    --zocare-brand-light: 262 50% 70%;
-    --zocare-brand-dark: 262 90% 45%;
+    --zocare-brand: 194 100% 47%;
+    --zocare-brand-light: 194 100% 62%;
+    --zocare-brand-dark: 194 100% 35%;
     --zocare-success: 142 76% 36%;
     --zocare-warning: 38 92% 50%;
     --zocare-error: 0 84% 60%;
   }
 
   .dark {
+    /* Base colors */
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
+    /* Card colors */
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
 
+    /* Popover colors */
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 20% 98%;
+    /* Primary colors remain the same for brand consistency */
+    --primary: 194 100% 47%;
+    --primary-foreground: 0 0% 98%;
 
+    /* Secondary colors */
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
 
+    /* Muted colors */
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
 
+    /* Accent colors */
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
 
+    /* Destructive colors */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
+    /* Border and input colors */
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 262 83% 58%;
+    --ring: 194 100% 47%;
 
+    /* Sidebar colors */
     --sidebar-background: 240 10% 3.9%;
     --sidebar-foreground: 240 9% 89%;
-    --sidebar-primary: 262 83% 58%;
-    --sidebar-primary-foreground: 210 20% 98%;
+    --sidebar-primary: 194 100% 47%;
+    --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 6% 12%;
     --sidebar-accent-foreground: 240 9% 89%;
     --sidebar-border: 240 6% 12%;
-    --sidebar-ring: 262 83% 58%;
+    --sidebar-ring: 194 100% 47%;
+
+    /* ZoCare brand colors - adjusted for dark mode */
+    --zocare-brand: 194 100% 47%;
+    --zocare-brand-light: 194 100% 55%;
+    --zocare-brand-dark: 194 100% 35%;
+    --zocare-success: 142 70% 45%;
+    --zocare-warning: 38 85% 55%;
+    --zocare-error: 0 75% 55%;
   }
 }
 
@@ -103,6 +143,130 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  /* Improved scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+
+  /* Focus improvements for accessibility */
+  .focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Smooth transitions for theme switching */
+  * {
+    transition-property: color, background-color, border-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+}
+
+@layer components {
+  /* Responsive container utilities */
+  .container-responsive {
+    @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-xl {
+    @apply max-w-7xl;
+  }
+
+  /* Grid responsive utilities */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6;
+  }
+
+  /* Card responsive utilities */
+  .card-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+
+  /* Text responsive utilities */
+  .text-responsive-title {
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+  }
+
+  .text-responsive-subtitle {
+    @apply text-base sm:text-lg lg:text-xl font-semibold;
+  }
+
+  .text-responsive-body {
+    @apply text-sm sm:text-base;
+  }
+
+  /* Button responsive utilities */
+  .btn-responsive {
+    @apply px-3 py-2 sm:px-4 sm:py-2 lg:px-6 lg:py-3 text-sm sm:text-base;
+  }
+
+  /* Sidebar responsive utilities */
+  .sidebar-responsive {
+    @apply w-full sm:w-64 lg:w-72 xl:w-80;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Glass effect utilities */
+  .glass {
+    @apply bg-background/80 backdrop-blur-sm border border-border/50;
+  }
+
+  .glass-strong {
+    @apply bg-background/90 backdrop-blur-md border border-border/70;
+  }
+
+  /* Shadow utilities with theme awareness */
+  .shadow-theme {
+    box-shadow:
+      0 1px 3px 0 rgb(0 0 0 / 0.1),
+      0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .dark .shadow-theme {
+    box-shadow:
+      0 1px 3px 0 rgb(255 255 255 / 0.1),
+      0 1px 2px -1px rgb(255 255 255 / 0.1);
+  }
+
+  /* Responsive spacing utilities */
+  .space-responsive-x > * + * {
+    @apply ml-2 sm:ml-3 lg:ml-4;
+  }
+
+  .space-responsive-y > * + * {
+    @apply mt-2 sm:mt-3 lg:mt-4;
   }
 }

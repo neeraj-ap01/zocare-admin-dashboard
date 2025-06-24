@@ -12,10 +12,24 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        lg: "2rem",
+        xl: "2.5rem",
+        "2xl": "3rem",
+      },
       screens: {
         "2xl": "1400px",
       },
+    },
+    screens: {
+      xs: "475px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
     },
     extend: {
       colors: {
@@ -27,6 +41,17 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          50: "hsl(var(--primary-50))",
+          100: "hsl(var(--primary-100))",
+          200: "hsl(var(--primary-200))",
+          300: "hsl(var(--primary-300))",
+          400: "hsl(var(--primary-400))",
+          500: "hsl(var(--primary-500))",
+          600: "hsl(var(--primary-600))",
+          700: "hsl(var(--primary-700))",
+          800: "hsl(var(--primary-800))",
+          900: "hsl(var(--primary-900))",
+          950: "hsl(var(--primary-950))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -76,6 +101,11 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      spacing: {
+        18: "4.5rem",
+        88: "22rem",
+        128: "32rem",
+      },
       keyframes: {
         "accordion-down": {
           from: {
@@ -93,10 +123,20 @@ export default {
             height: "0",
           },
         },
+        "slide-in-from-left": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        "slide-out-to-left": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "slide-in-from-left": "slide-in-from-left 0.3s ease-out",
+        "slide-out-to-left": "slide-out-to-left 0.3s ease-out",
       },
     },
   },

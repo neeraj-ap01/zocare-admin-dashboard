@@ -22,19 +22,35 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <div className={cn("flex items-center justify-between mb-8", className)}>
-      <div className="space-y-1">
-        <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+    <div
+      className={cn(
+        "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8",
+        className,
+      )}
+    >
+      <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <h1 className="text-responsive-title text-foreground">{title}</h1>
           {badge && (
-            <Badge variant={badge.variant || "default"}>{badge.text}</Badge>
+            <Badge
+              variant={badge.variant || "default"}
+              className="self-start sm:self-auto"
+            >
+              {badge.text}
+            </Badge>
           )}
         </div>
         {description && (
-          <p className="text-muted-foreground max-w-2xl">{description}</p>
+          <p className="text-responsive-body text-muted-foreground max-w-none sm:max-w-2xl">
+            {description}
+          </p>
         )}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2 shrink-0">
+          {actions}
+        </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
 import { FieldTypeSelector, CreateFieldType } from "./FieldTypeSelector";
 import { FieldConfigurationForm } from "./FieldConfigurationForm";
 import { FieldType, FieldOption } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface FieldValue {
   id: string;
@@ -99,31 +100,38 @@ export function CreateFieldWorkflow({
   };
 
   return (
-    <DialogContent className="sm:max-w-[1000px] max-h-[90vh] overflow-y-auto">
-      <DialogHeader>
-        <DialogTitle>
+    <DialogContent
+      className={cn(
+        "w-[95vw] max-w-[1000px] max-h-[90vh] p-4 sm:p-6",
+        "overflow-y-auto hide-scrollbar",
+      )}
+    >
+      <DialogHeader className="pb-4 sm:pb-6">
+        <DialogTitle className="text-responsive-subtitle">
           {currentStep === "select-type"
             ? "Create New Field"
             : "Configure Field"}
         </DialogTitle>
       </DialogHeader>
 
-      {currentStep === "select-type" && (
-        <FieldTypeSelector
-          onSelect={handleFieldTypeSelect}
-          onCancel={onCancel}
-        />
-      )}
+      <div className="space-y-4 sm:space-y-6">
+        {currentStep === "select-type" && (
+          <FieldTypeSelector
+            onSelect={handleFieldTypeSelect}
+            onCancel={onCancel}
+          />
+        )}
 
-      {currentStep === "configure-field" && selectedFieldType && (
-        <FieldConfigurationForm
-          fieldType={selectedFieldType}
-          onSubmit={handleFormSubmit}
-          onBack={handleBack}
-          onCancel={onCancel}
-          isSubmitting={isSubmitting}
-        />
-      )}
+        {currentStep === "configure-field" && selectedFieldType && (
+          <FieldConfigurationForm
+            fieldType={selectedFieldType}
+            onSubmit={handleFormSubmit}
+            onBack={handleBack}
+            onCancel={onCancel}
+            isSubmitting={isSubmitting}
+          />
+        )}
+      </div>
     </DialogContent>
   );
 }
