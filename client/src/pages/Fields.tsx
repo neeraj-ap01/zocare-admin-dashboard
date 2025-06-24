@@ -34,6 +34,7 @@ import { DataTable } from "@/components/common/DataTable";
 import { EmptyState } from "@/components/common/EmptyState";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { CreateFieldWorkflow } from "@/components/fields/CreateFieldWorkflow";
 import {
   useFields,
   useCreateField,
@@ -97,6 +98,33 @@ export default function Fields() {
         const type = row.getValue("type") as FieldType;
         const typeConfig = fieldTypeOptions.find((opt) => opt.value === type);
         return <Badge variant="outline">{typeConfig?.label || type}</Badge>;
+      },
+    },
+    {
+      accessorKey: "options",
+      header: "Options",
+      cell: ({ row }) => {
+        const field = row.original;
+        if (!field.options || field.options.length === 0) {
+          return <span className="text-muted-foreground text-sm">—</span>;
+        }
+        if (field.options.length === 1) {
+          return (
+            <Badge variant="secondary" className="text-xs">
+              {field.options[0].label}
+            </Badge>
+          );
+        }
+        return (
+          <div className="flex items-center gap-1">
+            <Badge variant="secondary" className="text-xs">
+              {field.options[0].label}
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              +{field.options.length - 1} more
+            </span>
+          </div>
+        );
       },
     },
     {
@@ -166,23 +194,14 @@ export default function Fields() {
     },
   ];
 
-  const handleCreateField = async (formData: FormData) => {
-    const data = Object.fromEntries(formData.entries());
+  const handleCreateField = async (fieldData: any) => {
     try {
-      await createFieldMutation.mutateAsync({
-        name: data.name as string,
-        label: data.label as string,
-        type: data.type as FieldType,
-        description: data.description as string,
-        required: data.required === "on",
-        placeholder: data.placeholder as string,
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+      await createFieldMutation.mutateAsync(fieldData);
       setIsCreateDialogOpen(false);
+      toast.success("Field created successfully");
     } catch (error) {
       console.error("Failed to create field:", error);
+      toast.error("Failed to create field");
     }
   };
 
@@ -234,88 +253,11 @@ export default function Fields() {
                 Create Field
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New Field</DialogTitle>
-                <DialogDescription>
-                  Add a new reusable field that can be used in forms.
-                </DialogDescription>
-              </DialogHeader>
-              <form action={handleCreateField} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Field Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="e.g., priority, due_date"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="label">Display Label</Label>
-                  <Input
-                    id="label"
-                    name="label"
-                    placeholder="e.g., Priority, Due Date"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="type">Field Type</Label>
-                  <Select name="type" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select field type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fieldTypeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Optional description for this field"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="placeholder">Placeholder Text</Label>
-                  <Input
-                    id="placeholder"
-                    name="placeholder"
-                    placeholder="Optional placeholder text"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch id="required" name="required" />
-                  <Label htmlFor="required">Required field</Label>
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsCreateDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={createFieldMutation.isPending}
-                    className="bg-zocare hover:bg-zocare-dark"
-                  >
-                    {createFieldMutation.isPending && (
-                      <LoadingSpinner size="sm" className="mr-2" />
-                    )}
-                    Create Field
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
+            <CreateFieldWorkflow
+              onSubmit={handleCreateField}
+              onCancel={() => setIsCreateDialogOpen(false)}
+              isSubmitting={createFieldMutation.isPending}
+            />
           </Dialog>
         }
       />
