@@ -26,6 +26,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -35,6 +36,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 const navigationItems = [
@@ -111,6 +113,8 @@ const navigationItems = [
 
 export function DashboardSidebar() {
   const location = useLocation();
+  const { setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
   const [openGroups, setOpenGroups] = React.useState<Set<string>>(new Set());
 
   const isActiveRoute = (path: string) => {
@@ -129,6 +133,13 @@ export function DashboardSidebar() {
       newOpenGroups.add(groupId);
     }
     setOpenGroups(newOpenGroups);
+  };
+
+  const handleNavigate = () => {
+    // Close sidebar on mobile when navigating
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   // Auto-open groups that contain active routes
@@ -205,7 +216,7 @@ export function DashboardSidebar() {
                                     "bg-sidebar-accent text-sidebar-accent-foreground font-medium border border-sidebar-ring/20",
                                 )}
                               >
-                                <Link to={child.path}>
+                                <Link to={child.path} onClick={handleNavigate}>
                                   <div className="flex items-center gap-2 min-w-0">
                                     <child.icon className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
                                     <span className="text-xs sm:text-sm truncate">
@@ -236,7 +247,7 @@ export function DashboardSidebar() {
                           "bg-sidebar-accent text-sidebar-accent-foreground font-medium border border-sidebar-ring/20",
                       )}
                     >
-                      <Link to={item.path}>
+                      <Link to={item.path} onClick={handleNavigate}>
                         <item.icon className="w-4 h-4 shrink-0" />
                         <span className="text-xs sm:text-sm truncate">
                           {item.label}
