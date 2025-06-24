@@ -1,5 +1,24 @@
 import React, { useState } from "react";
-import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+  DragOverlay,
+  defaultDropAnimationSideEffects,
+  DropAnimation,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { FormHeader } from "./FormHeader";
 import { DraggableField, FormField } from "./DraggableField";
 import { FieldSuggestionPanel } from "./FieldSuggestionPanel";
@@ -31,35 +50,83 @@ const defaultFields: FormField[] = [
   },
 ];
 
+const dropAnimationConfig: DropAnimation = {
+  sideEffects: defaultDropAnimationSideEffects({
+    styles: {
+      active: {
+        opacity: "0.4",
+      },
+    },
+  }),
+};
+
 export function FormBuilder({ onBack }: FormBuilderProps) {
   const [formName, setFormName] = useState("New form");
   const [titleName, setTitleName] = useState("New form");
   const [isEditableForEndUsers, setIsEditableForEndUsers] = useState(false);
   const [fields, setFields] = useState<FormField[]>(defaultFields);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
-    // Handle drag from suggestion panel to form
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    // Handle dragging from suggestion panel to form
     if (
-      result.source.droppableId === "field-suggestions" &&
-      result.destination.droppableId === "form-fields"
+      active.id.toString().startsWith("suggestion-") &&
+      over.id === "form-fields"
     ) {
-      const suggestionIndex = result.source.index;
-      // You'd need to get the field from FieldSuggestionPanel context here
-      // For now, this will be handled by the existing add field mechanism
+      // This will be handled in handleDragEnd
+      return;
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (!over) return;
+
+    // Handle dragging from suggestion panel to form
+    if (active.id.toString().startsWith("suggestion-")) {
+      // Extract field data from the active draggable
+      const fieldData = active.data.current?.field as Omit<FormField, "id">;
+      if (fieldData && over.id === "form-fields") {
+        const newField: FormField = {
+          ...fieldData,
+          id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          isDefault: false,
+          editable: true,
+        };
+        setFields((prev) => [...prev, newField]);
+      }
       return;
     }
 
     // Handle reordering within form fields
-    if (
-      result.source.droppableId === "form-fields" &&
-      result.destination.droppableId === "form-fields"
-    ) {
-      const items = Array.from(fields);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
-      setFields(items);
+    if (active.id !== over.id) {
+      setFields((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
     }
   };
 
@@ -79,6 +146,8 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
     );
   };
 
+  const activeField = fields.find((field) => field.id === activeId);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <FormHeader
@@ -88,7 +157,13 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
         isActive={true}
       />
 
-      <DragDropContext onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
         <div className="flex">
           <div className="flex-1">
             <div className="p-6">
@@ -128,33 +203,43 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                 />
               </div>
 
-              <Droppable droppableId="form-fields">
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-0"
-                  >
-                    {fields.map((field, index) => (
-                      <DraggableField
-                        key={field.id}
-                        field={field}
-                        index={index}
-                        onRemove={handleRemoveField}
-                        onUpdate={handleUpdateField}
-                        isEditableForEndUsers={isEditableForEndUsers}
-                      />
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
+              <SortableContext
+                items={fields.map((field) => field.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div
+                  id="form-fields"
+                  className="space-y-2 min-h-[200px] p-4 border-2 border-dashed border-gray-200 rounded-lg bg-white/50"
+                >
+                  {fields.map((field, index) => (
+                    <DraggableField
+                      key={field.id}
+                      field={field}
+                      index={index}
+                      onRemove={handleRemoveField}
+                      onUpdate={handleUpdateField}
+                      isEditableForEndUsers={isEditableForEndUsers}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
             </div>
           </div>
 
           <FieldSuggestionPanel onAddField={handleAddField} />
         </div>
-      </DragDropContext>
+
+        <DragOverlay dropAnimation={dropAnimationConfig}>
+          {activeField ? (
+            <div className="bg-white border rounded-lg p-4 shadow-lg opacity-90 transform rotate-2">
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-gray-400 rounded" />
+                <span className="text-sm font-medium">{activeField.label}</span>
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 }
