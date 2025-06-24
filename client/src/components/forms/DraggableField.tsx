@@ -72,49 +72,13 @@ export function DraggableField({
               <GripVertical className="h-4 w-4 text-gray-400" />
             </div>
 
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <Icon className="h-4 w-4 text-gray-500" />
-                <span className="text-sm font-medium">{field.label}</span>
-                {field.required && (
-                  <span className="text-red-500 text-sm">*</span>
-                )}
-                {!canEdit && <Lock className="h-3 w-3 text-gray-400" />}
-              </div>
-
-              {field.type === "text" && (
-                <Input
-                  placeholder={field.placeholder || "System field"}
-                  disabled={!canEdit}
-                  className="text-sm"
-                />
+            <div className="flex items-center gap-3 flex-1">
+              <Icon className="h-4 w-4 text-gray-500" />
+              <span className="text-sm font-medium">{field.label}</span>
+              {field.required && (
+                <span className="text-red-500 text-sm">*</span>
               )}
-
-              {field.type === "textarea" && (
-                <Textarea
-                  placeholder={field.placeholder || "System field"}
-                  disabled={!canEdit}
-                  className="text-sm resize-none"
-                  rows={3}
-                />
-              )}
-
-              {field.type === "checkbox" && (
-                <div className="flex items-center space-x-2">
-                  <Checkbox disabled={!canEdit} />
-                  <span className="text-sm text-gray-600">
-                    {field.placeholder || "Checkbox option"}
-                  </span>
-                </div>
-              )}
-
-              {field.type === "select" && (
-                <div className="space-y-2">
-                  <div className="text-sm text-gray-600">
-                    {field.placeholder || "Required for agents"}
-                  </div>
-                </div>
-              )}
+              {!canEdit && <Lock className="h-3 w-3 text-gray-400" />}
             </div>
 
             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -130,12 +94,6 @@ export function DraggableField({
               )}
             </div>
           </div>
-
-          {canEdit && (
-            <div className="mt-3 pt-3 border-t text-xs text-gray-500">
-              Title shown to end users
-            </div>
-          )}
         </div>
       )}
     </Draggable>
