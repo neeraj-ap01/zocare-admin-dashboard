@@ -70,7 +70,7 @@ interface ViewFormData {
 }
 
 export default function Views() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "create" | "edit">("list");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingView, setEditingView] = useState<View | null>(null);
 
