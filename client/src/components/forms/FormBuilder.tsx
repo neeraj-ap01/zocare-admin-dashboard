@@ -24,6 +24,7 @@ import { DraggableField, FormField } from "./DraggableField";
 import { FieldSuggestionPanel } from "./FieldSuggestionPanel";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { GripVertical } from "lucide-react";
 
 interface FormBuilderProps {
   onBack: () => void;
@@ -54,7 +55,7 @@ const dropAnimationConfig: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
     styles: {
       active: {
-        opacity: "0.4",
+        opacity: "0.5",
       },
     },
   }),
@@ -205,13 +206,13 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                 />
               </div>
 
-              <SortableContext
-                items={fields.map((field) => field.id)}
-                strategy={verticalListSortingStrategy}
+              <div
+                id="form-fields"
+                className="space-y-2 min-h-[200px] p-4 border-2 border-dashed border-gray-200 rounded-lg bg-white/50"
               >
-                <div
-                  id="form-fields"
-                  className="space-y-2 min-h-[200px] p-4 border-2 border-dashed border-gray-200 rounded-lg bg-white/50"
+                <SortableContext
+                  items={fields.map((field) => field.id)}
+                  strategy={verticalListSortingStrategy}
                 >
                   {fields.map((field, index) => (
                     <DraggableField
@@ -223,8 +224,8 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                       isEditableForEndUsers={isEditableForEndUsers}
                     />
                   ))}
-                </div>
-              </SortableContext>
+                </SortableContext>
+              </div>
             </div>
           </div>
 
@@ -233,8 +234,9 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
 
         <DragOverlay dropAnimation={dropAnimationConfig}>
           {activeField ? (
-            <div className="bg-white border rounded-lg p-4 shadow-lg opacity-90 transform rotate-2">
+            <div className="bg-white border rounded-lg p-4 shadow-lg opacity-90">
               <div className="flex items-center gap-3">
+                <GripVertical className="h-4 w-4 text-gray-400" />
                 <div className="w-4 h-4 bg-gray-400 rounded" />
                 <span className="text-sm font-medium">{activeField.label}</span>
               </div>
