@@ -31,6 +31,7 @@ import {
 import { Plus, X, GripVertical } from "lucide-react";
 import { CreateFieldType } from "./FieldTypeSelector";
 import { CsvUpload } from "./CsvUpload";
+import { cn } from "@/lib/utils";
 
 interface FieldValue {
   id: string;
@@ -49,7 +50,7 @@ interface FieldValuesSectionProps {
 interface SortableItemProps {
   id: string;
   value: FieldValue;
-  onUpdate: (id: string, field: "value" | "label", newVal: string) => void;
+  onUpdate: (id: string, field: "value" | "label", value: string) => void;
   onRemove: (id: string) => void;
   isCheckboxType: boolean;
 }
@@ -73,7 +74,7 @@ function SortableItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.8 : 1,
   };
 
   return (
@@ -134,6 +135,13 @@ function SortableItem({
       </Button>
     </div>
   );
+}
+
+export function FieldValuesSection({
+  fieldType,
+  values,
+  onChange,
+  defaultValue,
   onDefaultValueChange,
 }: FieldValuesSectionProps) {
   const [newValue, setNewValue] = React.useState("");
@@ -236,9 +244,9 @@ function SortableItem({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardTitle className="text-base">{getSectionTitle()}</CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {getSectionDescription()}
         </p>
       </CardHeader>
@@ -263,9 +271,10 @@ function SortableItem({
             </div>
           </>
         )}
+
         {/* Existing Values */}
         {values.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label className="text-sm font-medium">
               {isCheckboxType ? "Option" : "Values"} ({values.length})
             </Label>
@@ -301,7 +310,7 @@ function SortableItem({
             <Label className="text-sm font-medium">
               {isCheckboxType ? "Tag (optional)" : "Add new value"}
             </Label>
-            <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               {isCheckboxType ? (
                 <Input
                   placeholder="Tag (optional)"
@@ -339,47 +348,33 @@ function SortableItem({
                 <span className="sm:hidden">Add Value</span>
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Press Enter or click + to add the value
-            </p>
           </div>
         )}
 
-        {/* Default Value for Dropdown */}
-        {fieldType === "DROPDOWN" && values.length > 0 && (
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Default value</Label>
-            <Select value={defaultValue} onValueChange={onDefaultValueChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="(Select a value)" />
-              </SelectTrigger>
-              <SelectContent>
-                {values.map((value) => (
-                  <SelectItem key={value.id} value={value.value}>
-                    {value.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Specifies which value the field has by default
-            </p>
-          </div>
-        )}
-
-        {/* Validation for required values */}
-        {!isCheckboxType && values.length === 0 && (
-          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
-            💡 This field type requires at least one value to be functional
-          </div>
-        )}
-
-        {isCheckboxType && values.length > 1 && (
-          <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
-            ⚠️ Checkbox fields typically have only one option. Consider using
-            Radio or Multi-select for multiple options.
-          </div>
-        )}
+        {/* Default Value Selection */}
+        {(fieldType === "DROPDOWN" || fieldType === "RADIO") &&
+          values.length > 0 &&
+          onDefaultValueChange && (
+            <div className="space-y-2 pt-2 border-t">
+              <Label className="text-sm font-medium">Default value</Label>
+              <Select
+                value={defaultValue || ""}
+                onValueChange={onDefaultValueChange}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select default value (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">No default value</SelectItem>
+                  {values.map((value) => (
+                    <SelectItem key={value.id} value={value.value}>
+                      {value.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
       </CardContent>
     </Card>
   );
