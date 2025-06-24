@@ -83,21 +83,16 @@ export function DraggableField({
     <div
       ref={setNodeRef}
       style={style}
+      {...attributes}
+      {...listeners}
       className={cn(
-        "bg-white border rounded-lg p-4 group transition-all duration-200",
-        isDragging &&
-          "shadow-xl ring-2 ring-blue-500 ring-opacity-50 scale-105 z-50",
-        !isDragging && "hover:shadow-md hover:border-gray-300",
+        "bg-white border rounded-lg p-4 group cursor-grab active:cursor-grabbing",
+        isDragging && "opacity-50 z-50",
+        !isDragging && "hover:shadow-sm hover:border-gray-300",
       )}
     >
       <div className="flex items-center gap-3">
-        <div
-          {...attributes}
-          {...listeners}
-          className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 rounded transition-colors"
-        >
-          <GripVertical className="h-4 w-4 text-gray-400" />
-        </div>
+        <GripVertical className="h-4 w-4 text-gray-400" />
 
         <div className="flex items-center gap-3 flex-1">
           <Icon className="h-4 w-4 text-gray-500" />
@@ -111,7 +106,10 @@ export function DraggableField({
             <Button
               size="sm"
               variant="ghost"
-              onClick={() => onRemove(field.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(field.id);
+              }}
               className="h-8 w-8 p-0 hover:bg-red-100 hover:text-red-600"
             >
               <X className="h-4 w-4" />
