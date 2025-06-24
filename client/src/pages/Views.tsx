@@ -255,6 +255,17 @@ export default function Views() {
     );
   }
 
+  // Show create view mode
+  if (viewMode === "create") {
+    return (
+      <CreateView
+        onBack={() => setViewMode("list")}
+        onSave={handleCreateView}
+        isLoading={createViewMutation.isPending}
+      />
+    );
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -262,79 +273,13 @@ export default function Views() {
         description="Create custom ticket list views with filters and sorting"
         badge={{ text: `${views?.length || 0} views` }}
         actions={
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}
+          <Button
+            onClick={() => setViewMode("create")}
+            className="bg-zocare hover:bg-zocare-dark"
           >
-            <DialogTrigger asChild>
-              <Button className="bg-zocare hover:bg-zocare-dark">
-                <Plus className="mr-2 h-4 w-4" />
-                Create View
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New View</DialogTitle>
-                <DialogDescription>
-                  Create a custom view to filter and organize tickets.
-                </DialogDescription>
-              </DialogHeader>
-              <form action={handleCreateView} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">View Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="e.g., Open Tickets, High Priority"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Describe what this view shows"
-                  />
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch id="isPublic" name="isPublic" />
-                    <Label htmlFor="isPublic">Public view</Label>
-                    <span className="text-xs text-muted-foreground">
-                      (visible to all users)
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch id="isDefault" name="isDefault" />
-                    <Label htmlFor="isDefault">Set as default</Label>
-                    <span className="text-xs text-muted-foreground">
-                      (default view for new users)
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsCreateDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={createViewMutation.isPending}
-                    className="bg-zocare hover:bg-zocare-dark"
-                  >
-                    {createViewMutation.isPending && (
-                      <LoadingSpinner size="sm" className="mr-2" />
-                    )}
-                    Create View
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+            <Plus className="mr-2 h-4 w-4" />
+            Create View
+          </Button>
         }
       />
 
@@ -349,7 +294,7 @@ export default function Views() {
           description="Get started by creating your first custom ticket view"
           action={{
             label: "Create View",
-            onClick: () => setIsCreateDialogOpen(true),
+            onClick: () => setViewMode("create"),
           }}
         />
       ) : (
