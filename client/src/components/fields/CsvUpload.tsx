@@ -21,6 +21,7 @@ interface FieldValue {
 interface CsvUploadProps {
   onDataImported: (values: FieldValue[]) => void;
   fieldType: string;
+  currentValues?: FieldValue[];
 }
 
 interface CsvRow {
@@ -28,11 +29,16 @@ interface CsvRow {
   label: string;
 }
 
-export function CsvUpload({ onDataImported, fieldType }: CsvUploadProps) {
+export function CsvUpload({
+  onDataImported,
+  fieldType,
+  currentValues = [],
+}: CsvUploadProps) {
   const [file, setFile] = React.useState<File | null>(null);
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [error, setError] = React.useState<string>("");
   const [success, setSuccess] = React.useState<string>("");
+  const [mergeWithExisting, setMergeWithExisting] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const generateTemplate = () => {
@@ -66,7 +72,7 @@ export function CsvUpload({ onDataImported, fieldType }: CsvUploadProps) {
   };
 
   const parseCsvContent = (content: string): CsvRow[] => {
-    const lines = content.trim().split("\n");
+    const lines = content.trim().split(/\r?\n/);
     const result: CsvRow[] = [];
 
     // Skip header row (first line)
@@ -74,22 +80,35 @@ export function CsvUpload({ onDataImported, fieldType }: CsvUploadProps) {
       const line = lines[i].trim();
       if (!line) continue;
 
-      // Simple CSV parsing - handles quoted fields
+      // Enhanced CSV parsing - handles quoted fields and escaped quotes
       const fields = [];
       let current = "";
       let inQuotes = false;
+      let j = 0;
 
-      for (let j = 0; j < line.length; j++) {
+      while (j < line.length) {
         const char = line[j];
+        const nextChar = line[j + 1];
 
         if (char === '"') {
-          inQuotes = !inQuotes;
+          if (inQuotes && nextChar === '"') {
+            // Escaped quote within quoted field
+            current += '"';
+            j += 2;
+            continue;
+          } else {
+            // Start or end of quoted field
+            inQuotes = !inQuotes;
+          }
         } else if (char === "," && !inQuotes) {
           fields.push(current.trim());
           current = "";
+          j++;
+          continue;
         } else {
           current += char;
         }
+        j++;
       }
       fields.push(current.trim());
 
@@ -171,16 +190,41 @@ export function CsvUpload({ onDataImported, fieldType }: CsvUploadProps) {
       }
 
       // Convert to FieldValue format
-      const fieldValues: FieldValue[] = csvData.map((row, index) => ({
+      const newFieldValues: FieldValue[] = csvData.map((row, index) => ({
         id: `csv-${Date.now()}-${index}`,
         value: row.value,
         label: row.label,
       }));
 
-      onDataImported(fieldValues);
-      setSuccess(
-        `Successfully imported ${fieldValues.length} options from CSV file.`,
-      );
+      let finalValues: FieldValue[];
+
+      if (mergeWithExisting && currentValues.length > 0) {
+        // Merge with existing values, avoiding duplicates
+        const existingValues = new Set(currentValues.map((v) => v.value));
+        const uniqueNewValues = newFieldValues.filter(
+          (v) => !existingValues.has(v.value),
+        );
+        finalValues = [...currentValues, ...uniqueNewValues];
+
+        const skippedCount = newFieldValues.length - uniqueNewValues.length;
+        setSuccess(
+          `Successfully imported ${uniqueNewValues.length} new options from CSV file.${
+            skippedCount > 0
+              ? ` ${skippedCount} duplicate(s) were skipped.`
+              : ""
+          }`,
+        );
+      } else {
+        // Replace existing values
+        finalValues = newFieldValues;
+        setSuccess(
+          `Successfully imported ${newFieldValues.length} options from CSV file.${
+            currentValues.length > 0 ? " Previous options were replaced." : ""
+          }`,
+        );
+      }
+
+      onDataImported(finalValues);
       setFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -234,7 +278,7 @@ export function CsvUpload({ onDataImported, fieldType }: CsvUploadProps) {
         </div>
 
         {/* File Upload */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="csv-file" className="text-sm font-medium">
             Select CSV File
           </Label>
@@ -267,6 +311,25 @@ export function CsvUpload({ onDataImported, fieldType }: CsvUploadProps) {
               )}
             </Button>
           </div>
+
+          {/* Merge Option */}
+          {currentValues.length > 0 && (
+            <div className="flex items-center space-x-2 text-sm">
+              <input
+                type="checkbox"
+                id="merge-options"
+                checked={mergeWithExisting}
+                onChange={(e) => setMergeWithExisting(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <Label
+                htmlFor="merge-options"
+                className="text-sm text-muted-foreground"
+              >
+                Merge with existing options (otherwise replace all)
+              </Label>
+            </div>
+          )}
         </div>
 
         {/* Error Message */}

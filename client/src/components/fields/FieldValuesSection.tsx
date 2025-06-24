@@ -233,7 +233,11 @@ export function FieldValuesSection({
         {/* CSV Upload Section for supported field types */}
         {supportsCSVImport && (
           <>
-            <CsvUpload onDataImported={handleCsvImport} fieldType={fieldType} />
+            <CsvUpload
+              onDataImported={handleCsvImport}
+              fieldType={fieldType}
+              currentValues={values}
+            />
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
