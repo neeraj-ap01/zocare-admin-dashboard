@@ -63,7 +63,7 @@ const WHO_HAS_ACCESS_OPTIONS = [
 ];
 
 const GROUP_BY_OPTIONS = [
-  { value: "", label: "(No group)" },
+  { value: "none", label: "(No group)" },
   { value: "status", label: "Status" },
   { value: "priority", label: "Priority" },
   { value: "assignee", label: "Assignee" },
@@ -100,7 +100,7 @@ export function CreateView({
       { id: "request_date", label: "Request date", type: "date" },
       { id: "assignee", label: "Assignee", type: "user" },
     ],
-    groupBy: "",
+    groupBy: "none",
     orderBy: "id",
     sortDirection: "asc",
   });
