@@ -88,45 +88,46 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
         isActive={true}
       />
 
-      <div className="flex">
-        <div className="flex-1">
-          <div className="p-6">
-            <div className="mb-4">
-              <p className="text-sm text-gray-600">
-                Enable end users to select this form when submitting a ticket.
-              </p>
-              <div className="mt-4 mb-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Checkbox
-                    id="editable-for-end-users"
-                    checked={isEditableForEndUsers}
-                    onCheckedChange={setIsEditableForEndUsers}
-                  />
-                  <label
-                    htmlFor="editable-for-end-users"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Editable for end users
-                  </label>
-                </div>
-                <p className="text-xs text-gray-500 mb-3">
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="flex">
+          <div className="flex-1">
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-sm text-gray-600">
                   Enable end users to select this form when submitting a ticket.
                 </p>
+                <div className="mt-4 mb-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Checkbox
+                      id="editable-for-end-users"
+                      checked={isEditableForEndUsers}
+                      onCheckedChange={setIsEditableForEndUsers}
+                    />
+                    <label
+                      htmlFor="editable-for-end-users"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Editable for end users
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Enable end users to select this form when submitting a
+                    ticket.
+                  </p>
+                </div>
+                <h2 className="text-lg font-semibold mt-2 mb-1">
+                  Title shown to end users
+                </h2>
+                <Input
+                  type="text"
+                  value={titleName}
+                  onChange={(e) => setTitleName(e.target.value)}
+                  disabled={!isEditableForEndUsers}
+                  className="w-full bg-gray-50 disabled:opacity-50"
+                  placeholder="Default Ticket Form"
+                />
               </div>
-              <h2 className="text-lg font-semibold mt-2 mb-1">
-                Title shown to end users
-              </h2>
-              <Input
-                type="text"
-                value={titleName}
-                onChange={(e) => setTitleName(e.target.value)}
-                disabled={!isEditableForEndUsers}
-                className="w-full bg-gray-50 disabled:opacity-50"
-                placeholder="Default Ticket Form"
-              />
-            </div>
 
-            <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="form-fields">
                 {(provided, snapshot) => (
                   <div
@@ -148,12 +149,12 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                   </div>
                 )}
               </Droppable>
-            </DragDropContext>
+            </div>
           </div>
-        </div>
 
-        <FieldSuggestionPanel onAddField={handleAddField} />
-      </div>
+          <FieldSuggestionPanel onAddField={handleAddField} />
+        </div>
+      </DragDropContext>
     </div>
   );
 }
