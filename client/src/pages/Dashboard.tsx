@@ -12,9 +12,12 @@ import {
   ArrowUpRight,
   TrendingUp,
   AlertCircle,
+  Plus,
+  Activity,
 } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const statsCards = [
   {
@@ -24,6 +27,7 @@ const statsCards = [
     trend: "up",
     icon: FormInput,
     href: "/fields",
+    color: "primary",
   },
   {
     title: "Active Forms",
@@ -32,6 +36,7 @@ const statsCards = [
     trend: "up",
     icon: Building2,
     href: "/forms",
+    color: "success",
   },
   {
     title: "Team Members",
@@ -40,6 +45,7 @@ const statsCards = [
     trend: "up",
     icon: UserCheck,
     href: "/team-members",
+    color: "warning",
   },
   {
     title: "Active Groups",
@@ -48,6 +54,7 @@ const statsCards = [
     trend: "neutral",
     icon: Users,
     href: "/groups",
+    color: "muted",
   },
 ];
 
@@ -58,6 +65,7 @@ const recentActivity = [
     description: "Priority field was created by John Doe",
     time: "2 minutes ago",
     type: "field",
+    icon: FormInput,
   },
   {
     id: "2",
@@ -65,6 +73,7 @@ const recentActivity = [
     description: "Support Ticket Form was modified",
     time: "15 minutes ago",
     type: "form",
+    icon: Building2,
   },
   {
     id: "3",
@@ -72,6 +81,7 @@ const recentActivity = [
     description: "Sarah Wilson joined the Support team",
     time: "1 hour ago",
     type: "user",
+    icon: UserCheck,
   },
   {
     id: "4",
@@ -79,6 +89,15 @@ const recentActivity = [
     description: "New 'Critical' tag was added",
     time: "2 hours ago",
     type: "tag",
+    icon: Tag,
+  },
+  {
+    id: "5",
+    action: "View created",
+    description: "Marketing team view was configured",
+    time: "3 hours ago",
+    type: "view",
+    icon: Eye,
   },
 ];
 
@@ -89,6 +108,7 @@ const quickActions = [
     icon: FormInput,
     href: "/fields",
     action: "create",
+    color: "primary",
   },
   {
     title: "Design Form",
@@ -96,6 +116,7 @@ const quickActions = [
     icon: Building2,
     href: "/forms",
     action: "create",
+    color: "success",
   },
   {
     title: "Invite User",
@@ -103,6 +124,7 @@ const quickActions = [
     icon: UserCheck,
     href: "/team-members",
     action: "invite",
+    color: "warning",
   },
   {
     title: "Create View",
@@ -110,6 +132,7 @@ const quickActions = [
     icon: Eye,
     href: "/views",
     action: "create",
+    color: "muted",
   },
 ];
 
@@ -117,33 +140,55 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <PageHeader
         title="Dashboard Overview"
         description="Monitor your ticketing system configuration and activity"
         badge={{ text: "Live", variant: "secondary" }}
+        actions={
+          <Button
+            onClick={() => navigate("/fields")}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Quick Create</span>
+            <span className="sm:hidden">Create</span>
+          </Button>
+        }
       />
 
       {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {statsCards.map((stat, index) => (
           <Card
             key={index}
-            className="cursor-pointer hover:shadow-md transition-shadow"
+            className="cursor-pointer hover:shadow-lg transition-all duration-200 border border-border bg-card hover:bg-accent/5"
             onClick={() => navigate(stat.href)}
           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
+              <CardTitle className="text-sm font-medium text-card-foreground">
                 {stat.title}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <div
+                className={cn(
+                  "p-2 rounded-lg",
+                  stat.color === "primary" && "bg-primary/10 text-primary",
+                  stat.color === "success" && "bg-green-100 text-green-600",
+                  stat.color === "warning" && "bg-yellow-100 text-yellow-600",
+                  stat.color === "muted" && "bg-muted text-muted-foreground",
+                )}
+              >
+                <stat.icon className="h-4 w-4" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <CardContent className="pb-4">
+              <div className="text-2xl sm:text-3xl font-bold text-card-foreground mb-1">
+                {stat.value}
+              </div>
+              <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
                 <span>{stat.change}</span>
                 {stat.trend === "up" && (
-                  <TrendingUp className="h-3 w-3 text-zocare-success" />
+                  <TrendingUp className="h-3 w-3 text-green-600" />
                 )}
               </div>
             </CardContent>
@@ -151,108 +196,126 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5" />
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30"
-                >
-                  <div className="w-2 h-2 rounded-full bg-zocare mt-2"></div>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium">{activity.action}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {activity.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {activity.time}
-                    </p>
-                  </div>
-                </div>
-              ))}
+        <Card className="border border-border bg-card">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+                <Activity className="w-5 h-5 text-primary" />
+                Recent Activity
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground"
+              >
+                View All
+                <ArrowUpRight className="w-4 h-4 ml-1" />
+              </Button>
             </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {recentActivity.map((activity) => (
+              <div
+                key={activity.id}
+                className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/30 transition-colors"
+              >
+                <div className="p-2 rounded-lg bg-muted">
+                  <activity.icon className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-card-foreground">
+                    {activity.action}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {activity.description}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {activity.time}
+                  </p>
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
 
         {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+        <Card className="border border-border bg-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+              <Plus className="w-5 h-5 text-primary" />
+              Quick Actions
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-3">
-              {quickActions.map((action, index) => (
+          <CardContent className="space-y-3">
+            {quickActions.map((action, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/30 cursor-pointer transition-colors"
+                onClick={() => navigate(action.href)}
+              >
                 <div
-                  key={index}
-                  className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => navigate(action.href)}
+                  className={cn(
+                    "p-2 rounded-lg",
+                    action.color === "primary" && "bg-primary/10 text-primary",
+                    action.color === "success" && "bg-green-100 text-green-600",
+                    action.color === "warning" &&
+                      "bg-yellow-100 text-yellow-600",
+                    action.color === "muted" &&
+                      "bg-muted text-muted-foreground",
+                  )}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-md bg-zocare/10 flex items-center justify-center">
-                      <action.icon className="h-4 w-4 text-zocare" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{action.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {action.description}
-                      </p>
-                    </div>
-                  </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+                  <action.icon className="w-4 h-4" />
                 </div>
-              ))}
-            </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-card-foreground">
+                    {action.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {action.description}
+                  </p>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-muted-foreground shrink-0" />
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>
 
       {/* System Status */}
-      <Card>
+      <Card className="border border-border bg-card">
         <CardHeader>
-          <CardTitle>System Status</CardTitle>
+          <CardTitle className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-primary" />
+            System Status
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="flex items-center justify-between p-4 rounded-lg bg-zocare-success/10">
-              <div>
-                <p className="text-sm font-medium">API Status</p>
-                <p className="text-xs text-muted-foreground">
-                  All systems operational
-                </p>
-              </div>
-              <Badge
-                variant="secondary"
-                className="bg-zocare-success/20 text-zocare-success"
-              >
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <span className="text-sm font-medium text-green-800 dark:text-green-300">
+                API Status
+              </span>
+              <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700">
+                Operational
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <span className="text-sm font-medium text-green-800 dark:text-green-300">
+                Database
+              </span>
+              <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700">
                 Healthy
               </Badge>
             </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-zocare/10">
-              <div>
-                <p className="text-sm font-medium">Database</p>
-                <p className="text-xs text-muted-foreground">
-                  Connection stable
-                </p>
-              </div>
-              <Badge variant="secondary" className="bg-zocare/20 text-zocare">
-                Connected
+            <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+              <span className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                Cache
+              </span>
+              <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700">
+                Degraded
               </Badge>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
-              <div>
-                <p className="text-sm font-medium">Last Backup</p>
-                <p className="text-xs text-muted-foreground">2 hours ago</p>
-              </div>
-              <Badge variant="outline">Recent</Badge>
             </div>
           </div>
         </CardContent>
