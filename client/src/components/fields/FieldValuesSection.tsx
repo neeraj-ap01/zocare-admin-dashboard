@@ -80,47 +80,60 @@ function SortableItem({
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center space-x-2 p-2 border rounded-md bg-muted/50"
+      {...attributes}
+      className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-2 bg-muted/50 rounded-md border"
     >
-      <div {...attributes} {...listeners} className="cursor-move">
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 cursor-grab active:cursor-grabbing shrink-0"
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => onRemove(id)}
+          className="h-8 w-8 p-0 text-destructive hover:text-destructive shrink-0 sm:hidden"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
-      <div className="flex-1 grid grid-cols-2 gap-2">
-        <div>
+
+      <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="w-full">
           <Input
             placeholder="Value"
             value={value.value}
             onChange={(e) => onUpdate(id, "value", e.target.value)}
-            className="h-8 text-sm"
+            className="h-8 text-sm w-full"
           />
         </div>
-        <div>
+        <div className="w-full">
           <Input
-            placeholder="Label (optional)"
+            placeholder={isCheckboxType ? "Tag (optional)" : "Label"}
             value={value.label}
             onChange={(e) => onUpdate(id, "label", e.target.value)}
-            className="h-8 text-sm"
+            className="h-8 text-sm w-full"
           />
         </div>
       </div>
+
       <Button
         type="button"
         variant="ghost"
         size="sm"
         onClick={() => onRemove(id)}
-        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+        className="hidden sm:flex h-8 w-8 p-0 text-destructive hover:text-destructive shrink-0"
       >
         <X className="h-4 w-4" />
       </Button>
     </div>
   );
-}
-
-export function FieldValuesSection({
-  fieldType,
-  values,
-  onChange,
-  defaultValue,
   onDefaultValueChange,
 }: FieldValuesSectionProps) {
   const [newValue, setNewValue] = React.useState("");
@@ -288,41 +301,42 @@ export function FieldValuesSection({
             <Label className="text-sm font-medium">
               {isCheckboxType ? "Tag (optional)" : "Add new value"}
             </Label>
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2">
               {isCheckboxType ? (
                 <Input
                   placeholder="Tag (optional)"
                   value={newValue}
                   onChange={(e) => setNewValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="text-sm flex-1"
+                  className="text-sm flex-1 w-full"
                 />
               ) : (
-                <div className="flex-1 grid grid-cols-2 gap-2">
+                <>
                   <Input
                     placeholder="Value"
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="text-sm"
+                    className="text-sm flex-1 w-full"
                   />
                   <Input
-                    placeholder="Label (optional)"
+                    placeholder="Label"
                     value={newLabel}
                     onChange={(e) => setNewLabel(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="text-sm"
+                    className="text-sm flex-1 w-full"
                   />
-                </div>
+                </>
               )}
               <Button
                 type="button"
-                variant="outline"
-                size="sm"
                 onClick={addValue}
+                size="sm"
                 disabled={!newValue.trim()}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto shrink-0"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-4 w-4 mr-2 sm:mr-0" />
+                <span className="sm:hidden">Add Value</span>
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
