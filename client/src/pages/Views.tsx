@@ -34,13 +34,14 @@ import { DataTable } from "@/components/common/DataTable";
 import { EmptyState } from "@/components/common/EmptyState";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { CreateView } from "@/components/views/CreateView";
 import {
   useViews,
   useCreateView,
   useUpdateView,
   useDeleteView,
 } from "@/hooks/useApi";
-import { View } from "@/types";
+import { View, FilterCondition } from "@/types";
 import {
   Plus,
   MoreHorizontal,
@@ -53,6 +54,20 @@ import {
   Filter,
   Settings,
 } from "lucide-react";
+
+interface ViewFormData {
+  title: string;
+  description: string;
+  whoHasAccess: string;
+  conditions: {
+    allConditions: FilterCondition[];
+    anyConditions: FilterCondition[];
+  };
+  columns: Array<{ id: string; label: string; type: string }>;
+  groupBy: string;
+  orderBy: string;
+  sortDirection: "asc" | "desc";
+}
 
 export default function Views() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
