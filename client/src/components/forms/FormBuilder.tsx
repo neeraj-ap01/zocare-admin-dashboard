@@ -3,6 +3,8 @@ import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { FormHeader } from "./FormHeader";
 import { DraggableField, FormField } from "./DraggableField";
 import { FieldSuggestionPanel } from "./FieldSuggestionPanel";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 interface FormBuilderProps {
   onBack: () => void;
@@ -31,6 +33,7 @@ const defaultFields: FormField[] = [
 
 export function FormBuilder({ onBack }: FormBuilderProps) {
   const [formName, setFormName] = useState("New form");
+  const [titleName, setTitleName] = useState("New form");
   const [isEditableForEndUsers, setIsEditableForEndUsers] = useState(false);
   const [fields, setFields] = useState<FormField[]>(defaultFields);
 
@@ -65,8 +68,6 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
       <FormHeader
         formName={formName}
         onFormNameChange={setFormName}
-        isEditableForEndUsers={isEditableForEndUsers}
-        onEditableForEndUsersChange={setIsEditableForEndUsers}
         onBack={onBack}
         isActive={true}
       />
@@ -78,15 +79,34 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
               <p className="text-sm text-gray-600">
                 Enable end users to select this form when submitting a ticket.
               </p>
+              <div className="mt-4 mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Checkbox
+                    id="editable-for-end-users"
+                    checked={isEditableForEndUsers}
+                    onCheckedChange={setIsEditableForEndUsers}
+                  />
+                  <label
+                    htmlFor="editable-for-end-users"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Editable for end users
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500 mb-3">
+                  Enable end users to select this form when submitting a ticket.
+                </p>
+              </div>
               <h2 className="text-lg font-semibold mt-2 mb-1">
                 Title shown to end users
               </h2>
-              <input
+              <Input
                 type="text"
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
+                value={titleName}
+                onChange={(e) => setTitleName(e.target.value)}
                 disabled={!isEditableForEndUsers}
-                className="w-full p-2 border rounded-md bg-gray-50 text-gray-900 disabled:opacity-50"
+                className="w-full bg-gray-50 disabled:opacity-50"
+                placeholder="Default Ticket Form"
               />
             </div>
 
