@@ -182,6 +182,24 @@ export function CreateView({
     console.log("Preview view with data:", formData);
   };
 
+  // Handle keyboard shortcuts
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey) {
+        if (event.key === "s") {
+          event.preventDefault();
+          handleSave();
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          onBack();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [formData, onBack]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
