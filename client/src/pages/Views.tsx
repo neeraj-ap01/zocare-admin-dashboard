@@ -199,24 +199,29 @@ export default function Views() {
     },
   ];
 
-  const handleCreateView = async (formData: FormData) => {
-    const data = Object.fromEntries(formData.entries());
+  const handleCreateView = async (viewData: ViewFormData) => {
     try {
+      // Convert form data to API format
+      const allFilters = [
+        ...viewData.conditions.allConditions,
+        ...viewData.conditions.anyConditions,
+      ];
+
       await createViewMutation.mutateAsync({
-        name: data.name as string,
-        description: data.description as string,
-        filters: [],
-        sortBy: "createdAt",
-        sortOrder: "desc" as const,
-        columnsVisible: ["title", "priority", "assignee", "createdAt"],
-        isPublic: data.isPublic === "on",
-        isDefault: data.isDefault === "on",
+        name: viewData.title,
+        description: viewData.description,
+        filters: allFilters,
+        sortBy: viewData.orderBy,
+        sortOrder: viewData.sortDirection,
+        columnsVisible: viewData.columns.map((col) => col.id),
+        isPublic: viewData.whoHasAccess !== "only_me",
+        isDefault: false, // Default can be set later
         divisionId: "1", // Default division
         createdBy: "1", // Current user
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      setIsCreateDialogOpen(false);
+      setViewMode("list");
     } catch (error) {
       console.error("Failed to create view:", error);
     }
