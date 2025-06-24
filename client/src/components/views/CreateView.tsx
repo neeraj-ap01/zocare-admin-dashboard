@@ -503,13 +503,24 @@ export function CreateView({
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
-        <Button variant="outline" onClick={onBack}>
+      <div className="flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-background/95 backdrop-blur-sm border-t pt-4 mt-6">
+        <Button
+          variant="outline"
+          onClick={onBack}
+          className="order-2 sm:order-1"
+        >
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={isLoading}>
+        <Button
+          onClick={handleSave}
+          disabled={isLoading}
+          className="order-1 sm:order-2"
+        >
           {isLoading ? "Creating..." : "Create view"}
         </Button>
+        <div className="order-3 sm:hidden text-xs text-muted-foreground text-center">
+          Press Cmd+S to save, Esc to cancel
+        </div>
       </div>
     </div>
   );
