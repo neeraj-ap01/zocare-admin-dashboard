@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,339 +11,217 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { PageHeader } from "@/components/common/PageHeader";
-import { DataTable } from "@/components/common/DataTable";
-import { EmptyState } from "@/components/common/EmptyState";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import {
-  useForms,
-  useCreateForm,
-  useUpdateForm,
-  useDeleteForm,
-  useFields,
-} from "@/hooks/useApi";
-import { Form } from "@/types";
+import { FormBuilder } from "@/components/forms/FormBuilder";
 import {
   Plus,
+  Search,
+  Filter,
   MoreHorizontal,
   Edit,
+  Copy,
   Trash2,
-  Building2,
-  Eye,
-  EyeOff,
-  Settings,
 } from "lucide-react";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+interface TicketForm {
+  id: string;
+  name: string;
+  status: "active" | "inactive";
+  isDefault?: boolean;
+}
+
+const mockForms: TicketForm[] = [
+  {
+    id: "1",
+    name: "Default Ticket Form",
+    status: "active",
+    isDefault: true,
+  },
+];
 
 export default function Forms() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingForm, setEditingForm] = useState<Form | null>(null);
+  const [showFormBuilder, setShowFormBuilder] = useState(false);
+  const [activeTab, setActiveTab] = useState("active");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [forms, setForms] = useState<TicketForm[]>(mockForms);
 
-  const { data: forms, isLoading, error } = useForms();
-  const { data: fields } = useFields();
-  const createFormMutation = useCreateForm();
-  const updateFormMutation = useUpdateForm();
-  const deleteFormMutation = useDeleteForm();
+  const filteredForms = forms.filter((form) =>
+    form.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  const columns: ColumnDef<Form>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => (
-        <div>
-          <div className="font-medium">{row.getValue("name")}</div>
-          <div className="text-sm text-muted-foreground">
-            {row.original.description}
-          </div>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "fields",
-      header: "Fields",
-      cell: ({ row }) => {
-        const fieldCount = row.original.fields?.length || 0;
-        return (
-          <Badge variant="outline">
-            {fieldCount} field{fieldCount !== 1 ? "s" : ""}
-          </Badge>
-        );
-      },
-    },
-    {
-      accessorKey: "isActive",
-      header: "Status",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          {row.getValue("isActive") ? (
-            <Eye className="h-4 w-4 text-zocare-success" />
-          ) : (
-            <EyeOff className="h-4 w-4 text-muted-foreground" />
-          )}
-          <Badge variant={row.getValue("isActive") ? "default" : "secondary"}>
-            {row.getValue("isActive") ? "Active" : "Inactive"}
-          </Badge>
-        </div>
-      ),
-    },
-    {
-      accessorKey: "updatedAt",
-      header: "Last Modified",
-      cell: ({ row }) => {
-        const date = row.getValue("updatedAt") as Date;
-        return <div className="text-sm">{date.toLocaleDateString()}</div>;
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const form = row.original;
+  const activeForms = filteredForms.filter((form) => form.status === "active");
+  const inactiveForms = filteredForms.filter(
+    (form) => form.status === "inactive",
+  );
 
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => {
-                  setEditingForm(form);
-                  setIsEditDialogOpen(true);
-                }}
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Configure Fields
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  if (confirm("Are you sure you want to delete this form?")) {
-                    deleteFormMutation.mutate(form.id);
-                  }
-                }}
-                className="text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
-  ];
-
-  const handleCreateForm = async (formData: FormData) => {
-    const data = Object.fromEntries(formData.entries());
-    try {
-      await createFormMutation.mutateAsync({
-        name: data.name as string,
-        description: data.description as string,
-        fields: [],
-        isActive: true,
-        divisionId: "1", // Default division
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      setIsCreateDialogOpen(false);
-    } catch (error) {
-      console.error("Failed to create form:", error);
-    }
+  const handleCreateNewForm = () => {
+    setShowFormBuilder(true);
   };
 
-  const handleUpdateForm = async (formData: FormData) => {
-    if (!editingForm) return;
-
-    const data = Object.fromEntries(formData.entries());
-    try {
-      await updateFormMutation.mutateAsync({
-        id: editingForm.id,
-        name: data.name as string,
-        description: data.description as string,
-        isActive: data.isActive === "on",
-        updatedAt: new Date(),
-      });
-      setIsEditDialogOpen(false);
-      setEditingForm(null);
-    } catch (error) {
-      console.error("Failed to update form:", error);
-    }
+  const handleBackToList = () => {
+    setShowFormBuilder(false);
   };
 
-  if (error) {
-    return (
-      <ErrorBoundary>
-        <div>Error loading forms</div>
-      </ErrorBoundary>
-    );
+  if (showFormBuilder) {
+    return <FormBuilder onBack={handleBackToList} />;
   }
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Form Management"
-        description="Create and configure forms using your defined fields"
-        badge={{ text: `${forms?.length || 0} forms` }}
-        actions={
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold">Ticket forms</h1>
+            <p className="text-gray-600 mt-1">
+              A ticket form determines the fields and data a ticket contains.
+              Ticket forms can include system fields and any custom fields you
+              create.
+            </p>
+          </div>
+          <Button
+            onClick={handleCreateNewForm}
+            className="bg-blue-600 hover:bg-blue-700"
           >
-            <DialogTrigger asChild>
-              <Button className="bg-zocare hover:bg-zocare-dark">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Form
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New Form</DialogTitle>
-                <DialogDescription>
-                  Create a new form that can be used to collect ticket
-                  information.
-                </DialogDescription>
-              </DialogHeader>
-              <form action={handleCreateForm} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Form Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="e.g., Support Ticket Form"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Describe what this form is used for"
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsCreateDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={createFormMutation.isPending}
-                    className="bg-zocare hover:bg-zocare-dark"
-                  >
-                    {createFormMutation.isPending && (
-                      <LoadingSpinner size="sm" className="mr-2" />
-                    )}
-                    Create Form
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
-        }
-      />
-
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="lg" text="Loading forms..." />
+            <Plus className="mr-2 h-4 w-4" />
+            Add form
+          </Button>
         </div>
-      ) : !forms || forms.length === 0 ? (
-        <EmptyState
-          icon={Building2}
-          title="No forms found"
-          description="Get started by creating your first form using your defined fields"
-          action={{
-            label: "Create Form",
-            onClick: () => setIsCreateDialogOpen(true),
-          }}
-        />
-      ) : (
-        <DataTable
-          columns={columns}
-          data={forms}
-          searchKey="name"
-          searchPlaceholder="Search forms..."
-        />
-      )}
 
-      {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Form</DialogTitle>
-            <DialogDescription>
-              Update the form configuration.
-            </DialogDescription>
-          </DialogHeader>
-          {editingForm && (
-            <form action={handleUpdateForm} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-name">Form Name</Label>
-                <Input
-                  id="edit-name"
-                  name="name"
-                  defaultValue={editingForm.name}
-                  required
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
+            You can create multiple ticket forms for different products, so that
+            users across different products: in-that case, end users choose the
+            appropriate forms when submitting.{" "}
+            <a href="#" className="text-blue-600 underline">
+              Learn more
+            </a>
+          </p>
+        </div>
+
+        <div className="text-sm text-gray-600">
+          <strong>
+            Test shown to end users when multiple forms are available
+          </strong>
+          <p>Please choose your issue below</p>
+        </div>
+      </div>
+
+      {/* Search and Filters */}
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search ticket forms"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button variant="outline">
+          <Filter className="mr-2 h-4 w-4" />
+          Filters
+        </Button>
+      </div>
+
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="active">Active</TabsTrigger>
+          <TabsTrigger value="inactive">Inactive</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="active" className="mt-6">
+          <div className="space-y-4">
+            {activeForms.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No active forms found</p>
+              </div>
+            ) : (
+              activeForms.map((form) => (
+                <FormCard
+                  key={form.id}
+                  form={form}
+                  onEdit={() => setShowFormBuilder(true)}
                 />
+              ))
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="inactive" className="mt-6">
+          <div className="space-y-4">
+            {inactiveForms.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No inactive forms found</p>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-description">Description</Label>
-                <Textarea
-                  id="edit-description"
-                  name="description"
-                  defaultValue={editingForm.description || ""}
+            ) : (
+              inactiveForms.map((form) => (
+                <FormCard
+                  key={form.id}
+                  form={form}
+                  onEdit={() => setShowFormBuilder(true)}
                 />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="edit-isActive"
-                  name="isActive"
-                  defaultChecked={editingForm.isActive}
-                />
-                <Label htmlFor="edit-isActive">Active</Label>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditDialogOpen(false);
-                    setEditingForm(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={updateFormMutation.isPending}
-                  className="bg-zocare hover:bg-zocare-dark"
-                >
-                  {updateFormMutation.isPending && (
-                    <LoadingSpinner size="sm" className="mr-2" />
-                  )}
-                  Update Form
-                </Button>
-              </div>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
+              ))
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+interface FormCardProps {
+  form: TicketForm;
+  onEdit: () => void;
+}
+
+function FormCard({ form, onEdit }: FormCardProps) {
+  return (
+    <div className="bg-white border rounded-lg p-4 hover:shadow-sm transition-shadow">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+            <span className="text-sm font-medium text-gray-600">
+              {form.name.charAt(0)}
+            </span>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-medium">{form.name}</h3>
+              {form.isDefault && (
+                <Badge variant="secondary" className="text-xs">
+                  Default
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={onEdit}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Copy className="mr-2 h-4 w-4" />
+              Clone
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-600">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 }
