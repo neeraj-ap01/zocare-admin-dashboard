@@ -155,51 +155,30 @@ export function FieldSuggestionPanel({
             <p className="text-sm text-gray-500">No available ticket fields</p>
           </div>
         ) : (
-          <Droppable droppableId="field-suggestions" isDropDisabled={true}>
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className="space-y-2"
-              >
-                {filteredAndSortedFields.map((field, index) => {
-                  const Icon = fieldIcons[field.type];
-                  return (
-                    <Draggable
-                      key={`${field.label}-${index}`}
-                      draggableId={`suggestion-${field.label}-${index}`}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group cursor-grab active:cursor-grabbing"
-                        >
-                          <div className="flex items-center gap-3 flex-1">
-                            <Icon className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm font-medium">
-                              {field.label}
-                            </span>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleAddField(field)}
-                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </Draggable>
-                  );
-                })}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
+          <div className="space-y-2">
+            {filteredAndSortedFields.map((field, index) => {
+              const Icon = fieldIcons[field.type];
+              return (
+                <div
+                  key={`${field.label}-${index}`}
+                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <Icon className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm font-medium">{field.label}</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleAddField(field)}
+                    className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
