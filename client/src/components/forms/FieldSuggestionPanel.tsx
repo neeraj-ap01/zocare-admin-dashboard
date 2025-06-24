@@ -102,7 +102,8 @@ function DraggableSuggestionField({
     return `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  const handleAddField = () => {
+  const handleAddField = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const newField: FormField = {
       ...field,
       id: generateFieldId(),
@@ -116,14 +117,14 @@ function DraggableSuggestionField({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group transition-all duration-200 cursor-grab active:cursor-grabbing",
-        isDragging && "opacity-50 scale-105 shadow-lg",
+        "flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group cursor-grab active:cursor-grabbing",
+        isDragging && "opacity-50",
       )}
       {...attributes}
       {...listeners}
     >
       <div className="flex items-center gap-3 flex-1">
-        <GripVertical className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <GripVertical className="h-4 w-4 text-gray-400" />
         <Icon className="h-4 w-4 text-gray-500" />
         <span className="text-sm font-medium">{field.label}</span>
       </div>
