@@ -34,7 +34,7 @@ import { DataTable } from "@/components/common/DataTable";
 import { EmptyState } from "@/components/common/EmptyState";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import { CreateView } from "@/components/views/CreateView";
+import { CreateView } from "@/components/views";
 import {
   useViews,
   useCreateView,
