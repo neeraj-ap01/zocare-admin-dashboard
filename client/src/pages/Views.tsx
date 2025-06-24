@@ -216,6 +216,7 @@ export default function Views() {
         columnsVisible: viewData.columns.map((col) => col.id),
         isPublic: viewData.whoHasAccess !== "only_me",
         isDefault: false, // Default can be set later
+        groupBy: viewData.groupBy === "none" ? undefined : viewData.groupBy,
         divisionId: "1", // Default division
         createdBy: "1", // Current user
         createdAt: new Date(),
