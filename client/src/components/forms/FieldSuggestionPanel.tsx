@@ -178,7 +178,7 @@ const fieldIcons = {
   phone: Phone,
   date: Calendar,
   datetime: Clock,
-  select: ChevronDown,
+  dropdown: ChevronDown,
   multiselect: List,
   checkbox: CheckSquare,
   radio: Circle,
