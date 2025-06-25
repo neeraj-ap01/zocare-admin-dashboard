@@ -224,8 +224,10 @@ export default function Views() {
         updatedAt: new Date(),
       });
       setViewMode("list");
+      toast.success("View created successfully");
     } catch (error) {
       console.error("Failed to create view:", error);
+      toast.error("Failed to create view");
     }
   };
 
