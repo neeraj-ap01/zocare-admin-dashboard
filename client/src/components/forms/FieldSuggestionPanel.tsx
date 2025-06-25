@@ -57,7 +57,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "select",
+    type: "dropdown",
     label: "Priority",
     placeholder: "Select priority level",
     required: true,
@@ -71,7 +71,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     ],
   },
   {
-    type: "select",
+    type: "dropdown",
     label: "Department",
     placeholder: "Select department",
     required: false,
