@@ -107,6 +107,7 @@ export function CreateView({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const generateId = () =>
     `condition_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
