@@ -503,10 +503,17 @@ export function CreateView({
         </Button>
         <Button
           onClick={handleSave}
-          disabled={isLoading}
+          disabled={isLoading || isSaving}
           className="order-1 sm:order-2"
         >
-          {isLoading ? "Creating..." : "Create view"}
+          {isLoading || isSaving ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+              Creating...
+            </>
+          ) : (
+            "Create view"
+          )}
         </Button>
         <div className="order-3 sm:hidden text-xs text-muted-foreground text-center">
           Press Cmd+S to save, Esc to cancel
