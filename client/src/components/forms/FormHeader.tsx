@@ -92,7 +92,12 @@ export function FormHeader({
           <Button variant="outline" className="flex-1" onClick={onBack}>
             Cancel
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 flex-1">Save</Button>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 flex-1"
+            onClick={onSave}
+          >
+            Save
+          </Button>
         </div>
       </div>
 
