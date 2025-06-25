@@ -44,6 +44,7 @@ import {
   EyeOff,
   TrendingUp,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const colorPresets = [
   "#ef4444", // Red
