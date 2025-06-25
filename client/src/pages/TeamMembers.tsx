@@ -201,8 +201,10 @@ export default function TeamMembers() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
+      toast.success("Team member added successfully");
     } catch (error) {
       console.error("Failed to create user:", error);
+      toast.error("Failed to add team member");
     }
   };
 
