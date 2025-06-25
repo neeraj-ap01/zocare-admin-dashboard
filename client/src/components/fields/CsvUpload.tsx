@@ -283,7 +283,7 @@ export function CsvUpload({
           <Label htmlFor="csv-file" className="text-sm font-medium">
             Select CSV File
           </Label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Input
               ref={fileInputRef}
               id="csv-file"
@@ -297,7 +297,7 @@ export function CsvUpload({
               type="button"
               onClick={handleUpload}
               disabled={!file || isProcessing}
-              className="px-4"
+              className="w-full sm:w-auto sm:px-4"
             >
               {isProcessing ? (
                 <>
