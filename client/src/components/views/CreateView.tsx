@@ -173,9 +173,14 @@ export function CreateView({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (validateForm()) {
-      onSave(formData);
+      setIsSaving(true);
+      try {
+        await onSave(formData);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
