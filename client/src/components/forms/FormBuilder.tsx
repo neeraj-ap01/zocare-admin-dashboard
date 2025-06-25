@@ -51,6 +51,7 @@ import { cn } from "@/lib/utils";
 interface FormBuilderProps {
   onBack: () => void;
   onSave?: () => void;
+  isSaving?: boolean;
 }
 
 const defaultFields: FormField[] = [
