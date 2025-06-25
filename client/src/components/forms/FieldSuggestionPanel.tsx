@@ -298,9 +298,9 @@ export function FieldSuggestionPanel({
   return (
     <div
       className={cn(
-        "bg-background border-l border-border",
+        "bg-background border-l border-border dark:bg-background",
         isMobile
-          ? "fixed inset-0 z-50 bg-background"
+          ? "fixed inset-0 z-50 bg-background dark:bg-background"
           : "w-80 xl:w-96 2xl:w-[400px] flex-shrink-0",
       )}
     >
