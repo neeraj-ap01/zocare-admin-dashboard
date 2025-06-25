@@ -8,6 +8,7 @@ interface FormHeaderProps {
   formName: string;
   onFormNameChange: (name: string) => void;
   onBack: () => void;
+  onSave?: () => void;
   isActive?: boolean;
 }
 
