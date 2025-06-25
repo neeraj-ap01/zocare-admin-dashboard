@@ -153,7 +153,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "file",
+    type: "text",
     label: "Attachments",
     placeholder: "Upload relevant files",
     required: false,
@@ -161,7 +161,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "url",
+    type: "text",
     label: "Related URL",
     placeholder: "https://example.com",
     required: false,
