@@ -178,8 +178,6 @@ export function CreateView({
     }
   };
 
-
-
   // Handle keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -474,8 +472,6 @@ export function CreateView({
               </div>
             </CardContent>
           </Card>
-        </div>
-
         </div>
 
         {/* Preview Section - Full Width */}
