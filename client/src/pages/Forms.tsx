@@ -87,10 +87,17 @@ export default function Forms() {
     setShowFormBuilder(false);
   };
 
-  const handleSaveForm = () => {
-    // Show success message and navigate back
-    setShowFormBuilder(false);
-    // You can add toast notification here
+  const handleSaveForm = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Show success message and navigate back
+      setShowFormBuilder(false);
+      // You can add toast notification here if needed
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (showFormBuilder) {
