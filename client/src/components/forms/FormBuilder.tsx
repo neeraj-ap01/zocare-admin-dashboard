@@ -196,6 +196,7 @@ export function FormBuilder({ onBack, onSave }: FormBuilderProps) {
         formName={formName}
         onFormNameChange={setFormName}
         onBack={onBack}
+        onSave={onSave}
         isActive={true}
       />
 
