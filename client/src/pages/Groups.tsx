@@ -185,8 +185,10 @@ export default function Groups() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
+      toast.success("Group created successfully");
     } catch (error) {
       console.error("Failed to create group:", error);
+      toast.error("Failed to create group");
     }
   };
 
