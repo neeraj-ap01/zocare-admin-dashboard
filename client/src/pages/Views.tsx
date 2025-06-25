@@ -228,9 +228,10 @@ export default function Views() {
     }
   };
 
-  const handleUpdateView = async (formData: FormData) => {
+  const handleUpdateView = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingView) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateViewMutation.mutateAsync({
