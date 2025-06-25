@@ -256,7 +256,9 @@ export default function Views() {
       });
       setIsEditDialogOpen(false);
       setEditingView(null);
-      toast.success("View updated successfully");
+      setTimeout(() => {
+        toast.success("View updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update view:", error);
       toast.error("Failed to update view");
