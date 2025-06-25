@@ -362,6 +362,12 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                         radio: Circle,
                         number: Hash,
                         date: Calendar,
+                        email: Mail,
+                        phone: Phone,
+                        select: ChevronDown,
+                        datetime: Clock,
+                        file: Upload,
+                        url: Link,
                       };
                       const Icon = fieldIcons[activeField.type];
                       return <Icon className="h-4 w-4 text-primary" />;
