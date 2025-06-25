@@ -183,7 +183,9 @@ export default function TeamMembers() {
     },
   ];
 
-  const handleCreateUser = async (formData: FormData) => {
+  const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await createUserMutation.mutateAsync({
@@ -203,9 +205,10 @@ export default function TeamMembers() {
     }
   };
 
-  const handleUpdateUser = async (formData: FormData) => {
+  const handleUpdateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingUser) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateUserMutation.mutateAsync({
