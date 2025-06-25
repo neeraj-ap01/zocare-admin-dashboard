@@ -317,9 +317,9 @@ export function PreviewPanel({
   }
 
   return (
-    <Card className="sticky top-6">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-base">Preview</CardTitle>
+        <CardTitle className="text-lg">Preview</CardTitle>
         <p className="text-sm text-muted-foreground">
           A sneak peek at how your conditions might work together to filter
           tickets.
@@ -329,7 +329,7 @@ export function PreviewPanel({
         {isPreviewDisabled && (
           <Alert>
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription className="text-sm">
+            <AlertDescription>
               You need to add at least one{" "}
               <span className="font-medium">All</span> condition for Assignee,
               Group, Requester, Status, or Type
@@ -338,10 +338,9 @@ export function PreviewPanel({
         )}
 
         <Button
-          variant="outline"
           onClick={generatePreview}
-          className="w-full"
           disabled={isPreviewDisabled}
+          className="w-full sm:w-auto"
         >
           <Eye className="h-4 w-4 mr-2" />
           Preview
