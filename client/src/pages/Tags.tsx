@@ -236,7 +236,7 @@ export default function Tags() {
                   Add a new tag for categorizing tickets.
                 </DialogDescription>
               </DialogHeader>
-              <form action={handleCreateTag} className="space-y-4">
+              <form onSubmit={handleCreateTag} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Tag Name</Label>
                   <Input

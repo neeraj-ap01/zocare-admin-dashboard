@@ -238,7 +238,7 @@ export default function Groups() {
                   Create a group to organize users and manage permissions.
                 </DialogDescription>
               </DialogHeader>
-              <form action={handleCreateGroup} className="space-y-4">
+              <form onSubmit={handleCreateGroup} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Group Name</Label>
                   <Input

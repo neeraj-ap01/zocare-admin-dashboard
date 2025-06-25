@@ -317,7 +317,7 @@ export default function Views() {
             </DialogDescription>
           </DialogHeader>
           {editingView && (
-            <form action={handleUpdateView} className="space-y-4">
+            <form onSubmit={handleUpdateView} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">View Name</Label>
                 <Input
