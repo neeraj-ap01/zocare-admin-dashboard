@@ -292,7 +292,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                     id="form-fields"
                     className={cn(
                       "space-y-3 min-h-[300px] p-4 sm:p-6 border-2 border-dashed rounded-lg transition-all duration-200",
-                      "border-border bg-card/50 hover:border-primary/50 hover:bg-primary/5",
+                      "border-border bg-card/50 dark:bg-card/20 hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10",
                       fields.length === 0 && "flex items-center justify-center",
                     )}
                   >
