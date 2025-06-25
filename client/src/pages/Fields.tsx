@@ -198,10 +198,14 @@ export default function Fields() {
     try {
       await createFieldMutation.mutateAsync(fieldData);
       setIsCreateDialogOpen(false);
-      toast.success("Field created successfully");
+      setTimeout(() => {
+        toast.success("Field created successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create field:", error);
-      toast.error("Failed to create field");
+      setTimeout(() => {
+        toast.error("Failed to create field");
+      }, 100);
     }
   };
 
