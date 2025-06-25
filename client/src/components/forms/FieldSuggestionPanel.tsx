@@ -1,143 +1,282 @@
-import React, { useState, useMemo } from "react";
+import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { FormField } from "./DraggableField";
 import {
   Type,
   AlignLeft,
-  CheckSquare,
+  Hash,
+  Mail,
+  Phone,
+  Calendar,
+  Clock,
   ChevronDown,
   List,
+  CheckSquare,
   Circle,
-  Hash,
-  Calendar,
-  Plus,
-  Search,
+  Upload,
+  Link,
   GripVertical,
+  X,
+  Plus,
 } from "lucide-react";
-import { FormField } from "./DraggableField";
 import { cn } from "@/lib/utils";
 
-const availableFields: Omit<FormField, "id">[] = [
-  {
-    type: "dropdown",
-    label: "Action Set - TRD",
-    placeholder: "Select action",
-  },
-  {
-    type: "dropdown",
-    label: "Assignee",
-    placeholder: "Select assignee",
-  },
+interface FieldSuggestionPanelProps {
+  onAddField: (field: FormField) => void;
+  addedFieldLabels: string[];
+  isMobile?: boolean;
+  onClose?: () => void;
+}
+
+const suggestedFields: Omit<FormField, "id">[] = [
   {
     type: "text",
-    label: "Business Area",
-    placeholder: "Enter business area",
+    label: "Customer Name",
+    placeholder: "Enter full name",
+    required: false,
+    isDefault: false,
+    editable: true,
   },
   {
-    type: "dropdown",
-    label: "Category Identifier",
-    placeholder: "Select category",
+    type: "email",
+    label: "Email Address",
+    placeholder: "customer@example.com",
+    required: true,
+    isDefault: false,
+    editable: true,
   },
   {
-    type: "text",
-    label: "City",
-    placeholder: "Enter city",
+    type: "phone",
+    label: "Phone Number",
+    placeholder: "+1 (555) 000-0000",
+    required: false,
+    isDefault: false,
+    editable: true,
   },
   {
-    type: "text",
-    label: "Customer Confirmation",
-    placeholder: "Enter confirmation details",
+    type: "select",
+    label: "Priority",
+    placeholder: "Select priority level",
+    required: true,
+    isDefault: false,
+    editable: true,
+    options: [
+      { value: "low", label: "Low" },
+      { value: "medium", label: "Medium" },
+      { value: "high", label: "High" },
+      { value: "urgent", label: "Urgent" },
+    ],
   },
   {
-    type: "text",
-    label: "FRT",
-    placeholder: "Enter FRT",
+    type: "select",
+    label: "Department",
+    placeholder: "Select department",
+    required: false,
+    isDefault: false,
+    editable: true,
+    options: [
+      { value: "support", label: "Technical Support" },
+      { value: "billing", label: "Billing" },
+      { value: "sales", label: "Sales" },
+      { value: "general", label: "General Inquiry" },
+    ],
+  },
+  {
+    type: "multiselect",
+    label: "Affected Services",
+    placeholder: "Select affected services",
+    required: false,
+    isDefault: false,
+    editable: true,
+    options: [
+      { value: "web", label: "Website" },
+      { value: "mobile", label: "Mobile App" },
+      { value: "api", label: "API" },
+      { value: "dashboard", label: "Dashboard" },
+    ],
+  },
+  {
+    type: "radio",
+    label: "Issue Type",
+    placeholder: "",
+    required: true,
+    isDefault: false,
+    editable: true,
+    options: [
+      { value: "bug", label: "Bug Report" },
+      { value: "feature", label: "Feature Request" },
+      { value: "question", label: "Question" },
+      { value: "other", label: "Other" },
+    ],
+  },
+  {
+    type: "textarea",
+    label: "Additional Comments",
+    placeholder: "Please provide any additional details...",
+    required: false,
+    isDefault: false,
+    editable: true,
+  },
+  {
+    type: "number",
+    label: "Order Number",
+    placeholder: "Enter order number",
+    required: false,
+    isDefault: false,
+    editable: true,
+  },
+  {
+    type: "date",
+    label: "Incident Date",
+    placeholder: "When did this occur?",
+    required: false,
+    isDefault: false,
+    editable: true,
+  },
+  {
+    type: "datetime",
+    label: "Preferred Contact Time",
+    placeholder: "When can we reach you?",
+    required: false,
+    isDefault: false,
+    editable: true,
+  },
+  {
+    type: "checkbox",
+    label: "Subscribe to Updates",
+    placeholder: "",
+    required: false,
+    isDefault: false,
+    editable: true,
+  },
+  {
+    type: "file",
+    label: "Attachments",
+    placeholder: "Upload relevant files",
+    required: false,
+    isDefault: false,
+    editable: true,
+  },
+  {
+    type: "url",
+    label: "Related URL",
+    placeholder: "https://example.com",
+    required: false,
+    isDefault: false,
+    editable: true,
   },
 ];
 
 const fieldIcons = {
   text: Type,
   textarea: AlignLeft,
-  checkbox: CheckSquare,
-  dropdown: ChevronDown,
-  multiselect: List,
-  radio: Circle,
   number: Hash,
+  email: Mail,
+  phone: Phone,
   date: Calendar,
+  datetime: Clock,
+  select: ChevronDown,
+  multiselect: List,
+  checkbox: CheckSquare,
+  radio: Circle,
+  file: Upload,
+  url: Link,
 };
 
-interface FieldSuggestionPanelProps {
-  onAddField: (field: FormField) => void;
-  addedFieldLabels: string[];
-}
-
-interface DraggableSuggestionFieldProps {
+interface DraggableFieldItemProps {
   field: Omit<FormField, "id">;
-  index: number;
-  onAddField: (field: FormField) => void;
+  isAdded: boolean;
+  onAdd: () => void;
+  isMobile?: boolean;
 }
 
-function DraggableSuggestionField({
+function DraggableFieldItem({
   field,
-  index,
-  onAddField,
-}: DraggableSuggestionFieldProps) {
+  isAdded,
+  onAdd,
+  isMobile,
+}: DraggableFieldItemProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `suggestion-${field.label}-${index}`,
-    data: {
-      field,
-    },
+    id: `suggestion-${field.label}`,
+    data: { field },
+    disabled: isAdded || isMobile,
   });
 
   const Icon = fieldIcons[field.type];
 
-  const generateFieldId = () => {
-    return `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  };
-
-  const handleAddField = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const newField: FormField = {
-      ...field,
-      id: generateFieldId(),
-      isDefault: false,
-      editable: true,
-    };
-    onAddField(newField);
+  const handleClick = () => {
+    if (!isAdded) {
+      onAdd();
+    }
   };
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        "flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 group cursor-grab active:cursor-grabbing transition-all duration-200",
-        isDragging && "opacity-30 scale-95 border-blue-400",
-        !isDragging && "hover:border-gray-300",
+        "group p-3 sm:p-4 bg-card border border-border rounded-lg transition-all duration-200",
+        !isAdded &&
+          !isMobile &&
+          "cursor-grab active:cursor-grabbing hover:border-primary/50 hover:shadow-sm",
+        !isAdded &&
+          isMobile &&
+          "cursor-pointer hover:border-primary/50 hover:shadow-sm",
+        isAdded && "opacity-50 cursor-not-allowed bg-muted/50",
+        isDragging && "opacity-50 scale-95",
       )}
       {...attributes}
-      {...listeners}
+      {...(!isMobile ? listeners : {})}
+      onClick={isMobile ? handleClick : undefined}
     >
-      <div className="flex items-center gap-3 flex-1">
-        <GripVertical className="h-4 w-4 text-gray-400" />
-        <Icon className="h-4 w-4 text-gray-500" />
-        <span className="text-sm font-medium">{field.label}</span>
+      <div className="flex items-start gap-3">
+        <div className="shrink-0 w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+          <Icon className="w-4 h-4 text-primary" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <h4 className="text-sm sm:text-base font-medium text-card-foreground truncate">
+              {field.label}
+            </h4>
+            {!isMobile && !isAdded && (
+              <GripVertical className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+            )}
+          </div>
+
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2 line-clamp-2">
+            {field.placeholder || `${field.type} field`}
+          </p>
+
+          <div className="flex items-center justify-between">
+            <Badge variant="outline" className="text-xs">
+              {field.type}
+            </Badge>
+
+            {isMobile && !isAdded && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAdd();
+                }}
+                className="h-7 w-7 p-0"
+              >
+                <Plus className="w-3 h-3" />
+              </Button>
+            )}
+
+            {isAdded && (
+              <Badge className="bg-primary/20 text-primary text-xs">
+                Added
+              </Badge>
+            )}
+          </div>
+        </div>
       </div>
-      <Button
-        size="sm"
-        variant="ghost"
-        onClick={handleAddField}
-        className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-100 hover:text-blue-600"
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
     </div>
   );
 }
@@ -145,82 +284,74 @@ function DraggableSuggestionField({
 export function FieldSuggestionPanel({
   onAddField,
   addedFieldLabels,
+  isMobile = false,
+  onClose,
 }: FieldSuggestionPanelProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("name");
-
-  const filteredAndSortedFields = useMemo(() => {
-    // First filter out fields that are already added to the form
-    let filtered = availableFields.filter(
-      (field) =>
-        !addedFieldLabels.includes(field.label) &&
-        field.label.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-
-    if (sortBy === "name") {
-      filtered.sort((a, b) => a.label.localeCompare(b.label));
-    } else if (sortBy === "date-modified") {
-      // For demo purposes, we'll keep the original order for date modified
-    } else if (sortBy === "date-created") {
-      // For demo purposes, we'll reverse the order for date created
-      filtered.reverse();
-    }
-
-    return filtered;
-  }, [searchTerm, sortBy, addedFieldLabels]);
+  const handleAddField = (field: Omit<FormField, "id">) => {
+    const newField: FormField = {
+      ...field,
+      id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    };
+    onAddField(newField);
+  };
 
   return (
-    <div className="w-80 bg-white border-l">
-      <div className="p-4 border-b">
-        <h3 className="font-semibold text-sm mb-3">Available ticket fields</h3>
-        <p className="text-sm text-gray-600 mb-4">
-          Add fields from here to the ticket form.
-        </p>
-
-        <div className="space-y-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search ticket fields"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+    <div
+      className={cn(
+        "bg-background border-l border-border",
+        isMobile
+          ? "fixed inset-0 z-50 bg-background"
+          : "w-80 xl:w-96 2xl:w-[400px] flex-shrink-0",
+      )}
+    >
+      <div className="h-full flex flex-col">
+        {/* Header */}
+        <div className="p-4 sm:p-6 border-b border-border">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-responsive-subtitle font-semibold text-foreground">
+                Available Fields
+              </h3>
+              <p className="text-responsive-caption text-muted-foreground mt-1">
+                {isMobile
+                  ? "Tap to add fields"
+                  : "Drag to add fields to your form"}
+              </p>
+            </div>
+            {isMobile && onClose && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name">Sort by name</SelectItem>
-              <SelectItem value="date-modified">
-                Sort by date modified
-              </SelectItem>
-              <SelectItem value="date-created">Sort by date created</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
-      </div>
 
-      <div className="p-4">
-        {filteredAndSortedFields.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-sm text-gray-500">No available ticket fields</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-xs text-gray-500 mb-3">
-              Drag fields to the form or click + to add
-            </p>
-            {filteredAndSortedFields.map((field, index) => (
-              <DraggableSuggestionField
-                key={`${field.label}-${index}`}
+        {/* Fields List */}
+        <ScrollArea className="flex-1">
+          <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+            {suggestedFields.map((field) => (
+              <DraggableFieldItem
+                key={field.label}
                 field={field}
-                index={index}
-                onAddField={onAddField}
+                isAdded={addedFieldLabels.includes(field.label)}
+                onAdd={() => handleAddField(field)}
+                isMobile={isMobile}
               />
             ))}
+          </div>
+        </ScrollArea>
+
+        {/* Footer */}
+        {isMobile && (
+          <div className="p-4 border-t border-border">
+            <Button variant="outline" onClick={onClose} className="w-full">
+              Done Adding Fields
+            </Button>
           </div>
         )}
       </div>

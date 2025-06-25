@@ -24,6 +24,9 @@ import { DraggableField, FormField } from "./DraggableField";
 import { FieldSuggestionPanel } from "./FieldSuggestionPanel";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   GripVertical,
   Type,
@@ -34,7 +37,11 @@ import {
   Circle,
   Hash,
   Calendar,
+  Info,
+  PlusCircle,
+  ArrowLeft,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface FormBuilderProps {
   onBack: () => void;
@@ -77,6 +84,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
   const [isEditableForEndUsers, setIsEditableForEndUsers] = useState(false);
   const [fields, setFields] = useState<FormField[]>(defaultFields);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [showMobileSuggestions, setShowMobileSuggestions] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -158,6 +166,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
     );
     if (!fieldExists) {
       setFields((prev) => [...prev, field]);
+      setShowMobileSuggestions(false); // Close mobile panel after adding
     }
   };
 
@@ -176,7 +185,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
   const activeField = fields.find((field) => field.id === activeId);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <FormHeader
         formName={formName}
         onFormNameChange={setFormName}
@@ -191,79 +200,156 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex">
-          <div className="flex-1">
-            <div className="p-6">
-              <div className="mb-4">
-                <p className="text-sm text-gray-600">
-                  Enable end users to select this form when submitting a ticket.
-                </p>
-                <div className="mt-4 mb-4">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Checkbox
-                      id="editable-for-end-users"
-                      checked={isEditableForEndUsers}
-                      onCheckedChange={setIsEditableForEndUsers}
-                    />
-                    <label
-                      htmlFor="editable-for-end-users"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Editable for end users
-                    </label>
-                  </div>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Enable end users to select this form when submitting a
-                    ticket.
-                  </p>
-                </div>
-                <h2 className="text-lg font-semibold mt-2 mb-1">
-                  Title shown to end users
-                </h2>
-                <Input
-                  type="text"
-                  value={titleName}
-                  onChange={(e) => setTitleName(e.target.value)}
-                  disabled={!isEditableForEndUsers}
-                  className="w-full bg-gray-50 disabled:opacity-50"
-                  placeholder="Default Ticket Form"
-                />
-              </div>
-
-              <div
-                id="form-fields"
-                className="space-y-2 min-h-[200px] p-4 border-2 border-dashed border-gray-200 rounded-lg bg-white/50 transition-all duration-200 hover:border-blue-300 hover:bg-blue-50/30"
+        <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)]">
+          {/* Main Content Area */}
+          <div className="flex-1 order-2 lg:order-1">
+            <div className="container-responsive card-responsive space-responsive">
+              {/* Back Button - Mobile */}
+              <Button
+                variant="ghost"
+                onClick={onBack}
+                className="lg:hidden mb-4 p-0 h-auto text-muted-foreground hover:text-foreground"
               >
-                <SortableContext
-                  items={fields.map((field) => field.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {fields.map((field, index) => (
-                    <DraggableField
-                      key={field.id}
-                      field={field}
-                      index={index}
-                      onRemove={handleRemoveField}
-                      onUpdate={handleUpdateField}
-                      isEditableForEndUsers={isEditableForEndUsers}
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Forms
+              </Button>
+
+              {/* Form Configuration */}
+              <div className="space-y-4 sm:space-y-6">
+                <Alert className="bg-primary/5 border-primary/20 dark:bg-primary/10 dark:border-primary/30">
+                  <Info className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-responsive-body text-foreground">
+                    Configure your form settings and drag fields from the panel
+                    to customize the layout.
+                  </AlertDescription>
+                </Alert>
+
+                {/* End User Settings */}
+                <div className="space-y-4 p-4 sm:p-6 bg-muted/30 rounded-lg border border-border">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        id="editable-for-end-users"
+                        checked={isEditableForEndUsers}
+                        onCheckedChange={setIsEditableForEndUsers}
+                      />
+                      <Label
+                        htmlFor="editable-for-end-users"
+                        className="text-responsive-body font-medium leading-none cursor-pointer"
+                      >
+                        Enable for end users
+                      </Label>
+                    </div>
+                    <p className="text-responsive-caption text-muted-foreground">
+                      Allow end users to select this form when submitting
+                      tickets.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="title-name"
+                      className="text-responsive-subtitle font-semibold"
+                    >
+                      Title shown to end users
+                    </Label>
+                    <Input
+                      id="title-name"
+                      type="text"
+                      value={titleName}
+                      onChange={(e) => setTitleName(e.target.value)}
+                      disabled={!isEditableForEndUsers}
+                      className="w-full bg-background disabled:opacity-50 text-responsive-body"
+                      placeholder="Enter form title for end users"
                     />
-                  ))}
-                </SortableContext>
+                  </div>
+                </div>
+
+                {/* Add Field Button - Mobile */}
+                <Button
+                  onClick={() =>
+                    setShowMobileSuggestions(!showMobileSuggestions)
+                  }
+                  variant="outline"
+                  className="lg:hidden w-full btn-responsive"
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  {showMobileSuggestions ? "Hide" : "Add"} Fields
+                </Button>
+
+                {/* Form Fields Area */}
+                <div className="space-y-3">
+                  <h3 className="text-responsive-subtitle font-semibold text-foreground">
+                    Form Fields ({fields.length})
+                  </h3>
+
+                  <div
+                    id="form-fields"
+                    className={cn(
+                      "space-y-3 min-h-[300px] p-4 sm:p-6 border-2 border-dashed rounded-lg transition-all duration-200",
+                      "border-border bg-card/50 hover:border-primary/50 hover:bg-primary/5",
+                      fields.length === 0 && "flex items-center justify-center",
+                    )}
+                  >
+                    <SortableContext
+                      items={fields.map((field) => field.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {fields.length === 0 ? (
+                        <div className="text-center space-y-3">
+                          <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
+                            <PlusCircle className="h-8 w-8 text-muted-foreground" />
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-responsive-subtitle font-medium text-muted-foreground">
+                              No custom fields added yet
+                            </p>
+                            <p className="text-responsive-caption text-muted-foreground">
+                              Drag fields from the panel or use the "Add Fields"
+                              button to get started
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        fields.map((field, index) => (
+                          <DraggableField
+                            key={field.id}
+                            field={field}
+                            index={index}
+                            onRemove={handleRemoveField}
+                            onUpdate={handleUpdateField}
+                            isEditableForEndUsers={isEditableForEndUsers}
+                          />
+                        ))
+                      )}
+                    </SortableContext>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <FieldSuggestionPanel
-            onAddField={handleAddField}
-            addedFieldLabels={fields.map((field) => field.label)}
-          />
+          {/* Field Suggestions Panel */}
+          <div
+            className={cn(
+              "order-1 lg:order-2 lg:block",
+              showMobileSuggestions ? "block" : "hidden lg:block",
+            )}
+          >
+            <FieldSuggestionPanel
+              onAddField={handleAddField}
+              addedFieldLabels={fields.map((field) => field.label)}
+              isMobile={showMobileSuggestions}
+              onClose={() => setShowMobileSuggestions(false)}
+            />
+          </div>
         </div>
 
         <DragOverlay dropAnimation={dropAnimationConfig}>
           {activeId ? (
-            <div className="bg-white border-2 border-blue-400 rounded-lg p-4 shadow-xl">
+            <div className="bg-card border-2 border-primary rounded-lg p-4 shadow-xl">
               <div className="flex items-center gap-3">
-                <GripVertical className="h-4 w-4 text-gray-400" />
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
                 {activeField ? (
                   <>
                     {(() => {
@@ -278,16 +364,18 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                         date: Calendar,
                       };
                       const Icon = fieldIcons[activeField.type];
-                      return <Icon className="h-4 w-4 text-gray-500" />;
+                      return <Icon className="h-4 w-4 text-primary" />;
                     })()}
-                    <span className="text-sm font-medium">
+                    <span className="text-responsive-body font-medium text-card-foreground">
                       {activeField.label}
                     </span>
                   </>
                 ) : (
                   <>
-                    <div className="w-4 h-4 bg-gray-400 rounded" />
-                    <span className="text-sm font-medium">Field</span>
+                    <div className="w-4 h-4 bg-primary rounded" />
+                    <span className="text-responsive-body font-medium text-card-foreground">
+                      Field
+                    </span>
                   </>
                 )}
               </div>
