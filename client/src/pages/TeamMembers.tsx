@@ -201,10 +201,14 @@ export default function TeamMembers() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
-      toast.success("Team member added successfully");
+      setTimeout(() => {
+        toast.success("Team member added successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create user:", error);
-      toast.error("Failed to add team member");
+      setTimeout(() => {
+        toast.error("Failed to add team member");
+      }, 100);
     }
   };
 
@@ -225,10 +229,14 @@ export default function TeamMembers() {
       });
       setIsEditDialogOpen(false);
       setEditingUser(null);
-      toast.success("Team member updated successfully");
+      setTimeout(() => {
+        toast.success("Team member updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update user:", error);
-      toast.error("Failed to update team member");
+      setTimeout(() => {
+        toast.error("Failed to update team member");
+      }, 100);
     }
   };
 
