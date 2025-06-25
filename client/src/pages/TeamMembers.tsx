@@ -51,6 +51,7 @@ import {
   Shield,
   UserX,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const roleOptions: { value: UserRole; label: string; color: string }[] = [
   { value: "admin", label: "Admin", color: "text-red-600" },
