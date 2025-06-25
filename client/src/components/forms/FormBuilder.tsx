@@ -230,7 +230,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                 </Alert>
 
                 {/* End User Settings */}
-                <div className="space-y-4 p-4 sm:p-6 bg-muted/30 rounded-lg border border-border">
+                <div className="space-y-4 p-4 sm:p-6 bg-muted/50 dark:bg-muted/20 rounded-lg border border-border">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <Checkbox
