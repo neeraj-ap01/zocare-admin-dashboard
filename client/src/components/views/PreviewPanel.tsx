@@ -253,10 +253,16 @@ export function PreviewPanel({
 
   if (isPreviewOpen) {
     return (
-      <Card className="sticky top-6">
+      <Card className="w-full">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">Preview</CardTitle>
+            <div>
+              <CardTitle className="text-lg">Preview</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                A sneak peek at how your conditions might work together to
+                filter tickets.
+              </p>
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -265,27 +271,28 @@ export function PreviewPanel({
               Close
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            A sneak peek at how your conditions might work together to filter
-            tickets.
-          </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <p className="font-medium text-sm">
-              {matchingCount.toLocaleString()} tickets match your conditions
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Preview shows a maximum of 15 tickets with matching conditions.
-            </p>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <p className="font-medium">
+                {matchingCount.toLocaleString()} tickets match your conditions
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Preview shows a maximum of 15 tickets with matching conditions.
+              </p>
+            </div>
+            <Button variant="outline" onClick={generatePreview} size="sm">
+              Refresh Preview
+            </Button>
           </div>
 
-          <ScrollArea className="h-[400px] w-full rounded-md border">
+          <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
-                  {columns.slice(0, 5).map((column) => (
-                    <TableHead key={column.id} className="text-xs">
+                <TableRow className="bg-muted/50">
+                  {columns.map((column) => (
+                    <TableHead key={column.id} className="font-medium">
                       {column.label}
                     </TableHead>
                   ))}
@@ -293,9 +300,9 @@ export function PreviewPanel({
               </TableHeader>
               <TableBody>
                 {previewData.map((ticket) => (
-                  <TableRow key={ticket.id} className="text-xs">
-                    {columns.slice(0, 5).map((column) => (
-                      <TableCell key={column.id} className="p-2">
+                  <TableRow key={ticket.id} className="hover:bg-muted/30">
+                    {columns.map((column) => (
+                      <TableCell key={column.id} className="py-3">
                         {renderCellContent(ticket, column.id)}
                       </TableCell>
                     ))}
@@ -303,16 +310,7 @@ export function PreviewPanel({
                 ))}
               </TableBody>
             </Table>
-          </ScrollArea>
-
-          <Button
-            variant="outline"
-            onClick={generatePreview}
-            className="w-full"
-            size="sm"
-          >
-            Refresh Preview
-          </Button>
+          </div>
         </CardContent>
       </Card>
     );
