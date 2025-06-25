@@ -165,7 +165,9 @@ export default function Tags() {
     },
   ];
 
-  const handleCreateTag = async (formData: FormData) => {
+  const handleCreateTag = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await createTagMutation.mutateAsync({
@@ -184,9 +186,10 @@ export default function Tags() {
     }
   };
 
-  const handleUpdateTag = async (formData: FormData) => {
+  const handleUpdateTag = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingTag) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateTagMutation.mutateAsync({
