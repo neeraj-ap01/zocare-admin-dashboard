@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ChevronLeft, AlertTriangle } from "lucide-react";
 import { ConditionRow } from "./ConditionRow";
 import { ColumnManager } from "./ColumnManager";
+import { PreviewPanel } from "./PreviewPanel";
 import { FilterCondition } from "@/types";
 
 interface CreateViewProps {
