@@ -68,6 +68,7 @@ export default function Forms() {
   const [activeTab, setActiveTab] = useState("active");
   const [searchTerm, setSearchTerm] = useState("");
   const [forms, setForms] = useState<TicketForm[]>(mockForms);
+  const [isSaving, setIsSaving] = useState(false);
 
   const filteredForms = forms.filter((form) =>
     form.name.toLowerCase().includes(searchTerm.toLowerCase()),
