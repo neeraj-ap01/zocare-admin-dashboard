@@ -352,7 +352,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
 
         <DragOverlay dropAnimation={dropAnimationConfig}>
           {activeId ? (
-            <div className="bg-card border-2 border-primary rounded-lg p-4 shadow-xl">
+            <div className="bg-card border-2 border-primary rounded-lg p-4 shadow-xl dark:shadow-2xl">
               <div className="flex items-center gap-3">
                 <GripVertical className="h-4 w-4 text-muted-foreground" />
                 {activeField ? (
