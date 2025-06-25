@@ -261,7 +261,9 @@ export default function Views() {
       }, 100);
     } catch (error) {
       console.error("Failed to update view:", error);
-      toast.error("Failed to update view");
+      setTimeout(() => {
+        toast.error("Failed to update view");
+      }, 100);
     }
   };
 
