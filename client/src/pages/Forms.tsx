@@ -101,7 +101,13 @@ export default function Forms() {
   };
 
   if (showFormBuilder) {
-    return <FormBuilder onBack={handleBackToList} onSave={handleSaveForm} />;
+    return (
+      <FormBuilder
+        onBack={handleBackToList}
+        onSave={handleSaveForm}
+        isSaving={isSaving}
+      />
+    );
   }
 
   return (
