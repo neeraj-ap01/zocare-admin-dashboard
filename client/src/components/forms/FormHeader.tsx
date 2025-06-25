@@ -19,6 +19,7 @@ export function FormHeader({
   onBack,
   onSave,
   isActive = true,
+  isSaving = false,
 }: FormHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(formName);
