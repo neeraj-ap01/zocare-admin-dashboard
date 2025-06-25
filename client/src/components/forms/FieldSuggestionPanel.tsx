@@ -137,8 +137,8 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "datetime",
-    label: "Preferred Contact Time",
+    type: "date",
+    label: "Preferred Contact Date",
     placeholder: "When can we reach you?",
     required: false,
     isDefault: false,
