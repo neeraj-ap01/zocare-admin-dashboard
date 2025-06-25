@@ -481,25 +481,13 @@ export function CreateView({
 
         {/* Preview Panel */}
         <div className="lg:col-span-1">
-          <Card className="sticky top-6">
-            <CardHeader>
-              <CardTitle className="text-base">Preview</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                A sneak peek at how your conditions might work together to
-                filter tickets.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                onClick={handlePreview}
-                className="w-full"
-                disabled={isLoading}
-              >
-                Preview
-              </Button>
-            </CardContent>
-          </Card>
+          <PreviewPanel
+            conditions={formData.conditions}
+            columns={formData.columns}
+            groupBy={formData.groupBy}
+            orderBy={formData.orderBy}
+            sortDirection={formData.sortDirection}
+          />
         </div>
       </div>
 
