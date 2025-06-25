@@ -185,10 +185,14 @@ export default function Groups() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
-      toast.success("Group created successfully");
+      setTimeout(() => {
+        toast.success("Group created successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create group:", error);
-      toast.error("Failed to create group");
+      setTimeout(() => {
+        toast.error("Failed to create group");
+      }, 100);
     }
   };
 
@@ -207,10 +211,14 @@ export default function Groups() {
       });
       setIsEditDialogOpen(false);
       setEditingGroup(null);
-      toast.success("Group updated successfully");
+      setTimeout(() => {
+        toast.success("Group updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update group:", error);
-      toast.error("Failed to update group");
+      setTimeout(() => {
+        toast.error("Failed to update group");
+      }, 100);
     }
   };
 
