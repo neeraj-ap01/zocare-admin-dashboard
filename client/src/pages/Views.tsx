@@ -247,8 +247,10 @@ export default function Views() {
       });
       setIsEditDialogOpen(false);
       setEditingView(null);
+      toast.success("View updated successfully");
     } catch (error) {
       console.error("Failed to update view:", error);
+      toast.error("Failed to update view");
     }
   };
 
