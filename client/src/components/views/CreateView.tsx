@@ -178,11 +178,6 @@ export function CreateView({
     }
   };
 
-  const handlePreview = () => {
-    // Implement preview functionality
-    console.log("Preview view with data:", formData);
-  };
-
   // Handle keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
