@@ -223,11 +223,16 @@ export default function Views() {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      setViewMode("list");
+
       toast.success("View created successfully");
+      // Add delay to show the success message before navigation
+      setTimeout(() => {
+        setViewMode("list");
+      }, 500);
     } catch (error) {
       console.error("Failed to create view:", error);
       toast.error("Failed to create view");
+      throw error; // Re-throw to handle loading state properly
     }
   };
 
