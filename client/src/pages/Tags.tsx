@@ -205,8 +205,10 @@ export default function Tags() {
       });
       setIsEditDialogOpen(false);
       setEditingTag(null);
+      toast.success("Tag updated successfully");
     } catch (error) {
       console.error("Failed to update tag:", error);
+      toast.error("Failed to update tag");
     }
   };
 
