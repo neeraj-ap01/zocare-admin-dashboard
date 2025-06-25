@@ -182,10 +182,14 @@ export default function Tags() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
-      toast.success("Tag created successfully");
+      setTimeout(() => {
+        toast.success("Tag created successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create tag:", error);
-      toast.error("Failed to create tag");
+      setTimeout(() => {
+        toast.error("Failed to create tag");
+      }, 100);
     }
   };
 
@@ -205,10 +209,14 @@ export default function Tags() {
       });
       setIsEditDialogOpen(false);
       setEditingTag(null);
-      toast.success("Tag updated successfully");
+      setTimeout(() => {
+        toast.success("Tag updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update tag:", error);
-      toast.error("Failed to update tag");
+      setTimeout(() => {
+        toast.error("Failed to update tag");
+      }, 100);
     }
   };
 
