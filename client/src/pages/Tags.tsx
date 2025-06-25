@@ -336,7 +336,7 @@ export default function Tags() {
             <DialogDescription>Update the tag information.</DialogDescription>
           </DialogHeader>
           {editingTag && (
-            <form action={handleUpdateTag} className="space-y-4">
+            <form onSubmit={handleUpdateTag} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Tag Name</Label>
                 <Input

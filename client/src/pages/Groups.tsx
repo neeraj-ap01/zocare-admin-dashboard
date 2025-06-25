@@ -335,7 +335,7 @@ export default function Groups() {
             <DialogDescription>Update the group information.</DialogDescription>
           </DialogHeader>
           {editingGroup && (
-            <form action={handleUpdateGroup} className="space-y-4">
+            <form onSubmit={handleUpdateGroup} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Group Name</Label>
                 <Input

@@ -360,7 +360,7 @@ export default function TeamMembers() {
             </DialogDescription>
           </DialogHeader>
           {editingUser && (
-            <form action={handleUpdateUser} className="space-y-4">
+            <form onSubmit={handleUpdateUser} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-firstName">First Name</Label>
