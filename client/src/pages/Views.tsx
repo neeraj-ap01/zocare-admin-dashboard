@@ -233,7 +233,9 @@ export default function Views() {
       }, 100);
     } catch (error) {
       console.error("Failed to create view:", error);
-      toast.error("Failed to create view");
+      setTimeout(() => {
+        toast.error("Failed to create view");
+      }, 100);
       throw error; // Re-throw to handle loading state properly
     }
   };
