@@ -302,7 +302,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                     >
                       {fields.length === 0 ? (
                         <div className="text-center space-y-3">
-                          <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
+                          <div className="w-16 h-16 mx-auto bg-muted/70 dark:bg-muted/30 rounded-full flex items-center justify-center">
                             <PlusCircle className="h-8 w-8 text-muted-foreground" />
                           </div>
                           <div className="space-y-2">
