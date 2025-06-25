@@ -178,6 +178,8 @@ export function CreateView({
     }
   };
 
+
+
   // Handle keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -474,8 +476,10 @@ export function CreateView({
           </Card>
         </div>
 
-        {/* Preview Panel */}
-        <div className="lg:col-span-1">
+        </div>
+
+        {/* Preview Section - Full Width */}
+        <div className="space-y-6">
           <PreviewPanel
             conditions={formData.conditions}
             columns={formData.columns}
