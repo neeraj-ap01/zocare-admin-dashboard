@@ -205,9 +205,10 @@ export default function Fields() {
     }
   };
 
-  const handleUpdateField = async (formData: FormData) => {
+  const handleUpdateField = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingField) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateFieldMutation.mutateAsync({
