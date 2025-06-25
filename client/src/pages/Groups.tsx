@@ -39,10 +39,11 @@ import {
   Edit,
   Trash2,
   Users,
-  UserPlus,
-  Settings,
+  Shield,
+  Globe,
+  Lock,
 } from "lucide-react";
-
+import { toast } from "sonner";
 const colorOptions = [
   { value: "#8b5cf6", label: "Purple" },
   { value: "#06b6d4", label: "Cyan" },
