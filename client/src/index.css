@@ -21,7 +21,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    /* Primary colors - Based on #00AEEF (194°, 100%, 47%) */
+    /* Primary colors - Based on #00AEEF (194°, 100%, 47%) - Exact ZoCare Brand Color */
     --primary: 194 100% 47%;
     --primary-foreground: 0 0% 98%;
     --primary-50: 194 100% 97%;
@@ -30,11 +30,11 @@
     --primary-300: 194 100% 77%;
     --primary-400: 194 100% 62%;
     --primary-500: 194 100% 47%;
-    --primary-600: 194 100% 37%;
-    --primary-700: 194 100% 27%;
-    --primary-800: 194 100% 20%;
-    --primary-900: 194 80% 15%;
-    --primary-950: 194 60% 10%;
+    --primary-600: 194 100% 42%;
+    --primary-700: 194 100% 32%;
+    --primary-800: 194 100% 24%;
+    --primary-900: 194 85% 18%;
+    --primary-950: 194 70% 12%;
 
     /* Secondary colors */
     --secondary: 220 14.3% 95.9%;
@@ -181,50 +181,89 @@
 }
 
 @layer components {
-  /* Responsive container utilities */
+  /* Enhanced responsive container utilities for all screen sizes */
   .container-responsive {
-    @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 2xl:px-12;
   }
 
   .container-xl {
-    @apply max-w-7xl;
+    @apply max-w-7xl 2xl:max-w-[1440px];
   }
 
-  /* Grid responsive utilities */
+  /* Enhanced grid responsive utilities */
   .grid-responsive {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6;
   }
 
   .grid-responsive-2 {
-    @apply grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6;
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8;
   }
 
-  /* Card responsive utilities */
+  .grid-responsive-cards {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6;
+  }
+
+  /* Enhanced card responsive utilities */
   .card-responsive {
-    @apply p-4 sm:p-6 lg:p-8;
+    @apply p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10;
   }
 
-  /* Text responsive utilities */
+  .card-responsive-sm {
+    @apply p-2 sm:p-3 md:p-4 lg:p-5;
+  }
+
+  /* Enhanced text responsive utilities */
   .text-responsive-title {
-    @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold;
   }
 
   .text-responsive-subtitle {
-    @apply text-base sm:text-lg lg:text-xl font-semibold;
+    @apply text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold;
   }
 
   .text-responsive-body {
-    @apply text-sm sm:text-base;
+    @apply text-xs sm:text-sm md:text-base lg:text-lg;
   }
 
-  /* Button responsive utilities */
+  .text-responsive-caption {
+    @apply text-xs sm:text-sm md:text-base;
+  }
+
+  /* Enhanced button responsive utilities */
   .btn-responsive {
-    @apply px-3 py-2 sm:px-4 sm:py-2 lg:px-6 lg:py-3 text-sm sm:text-base;
+    @apply px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 lg:px-6 lg:py-3 xl:px-8 xl:py-4 text-xs sm:text-sm md:text-base;
   }
 
-  /* Sidebar responsive utilities */
+  .btn-responsive-sm {
+    @apply px-2 py-1 sm:px-2.5 sm:py-1.5 md:px-3 md:py-2 text-xs sm:text-sm;
+  }
+
+  /* Enhanced sidebar responsive utilities */
   .sidebar-responsive {
-    @apply w-full sm:w-64 lg:w-72 xl:w-80;
+    @apply w-full sm:w-64 md:w-72 lg:w-80 xl:w-88 2xl:w-96;
+  }
+
+  /* Enhanced spacing utilities for different screen sizes */
+  .space-responsive {
+    @apply space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8 xl:space-y-10;
+  }
+
+  .space-responsive-sm {
+    @apply space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-5;
+  }
+
+  /* Table responsive utilities */
+  .table-responsive {
+    @apply overflow-x-auto;
+  }
+
+  .table-responsive table {
+    @apply min-w-full;
+  }
+
+  /* Mobile-first navigation utilities */
+  .nav-responsive {
+    @apply flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2 md:space-x-4 lg:space-x-6;
   }
 }
 
@@ -261,12 +300,43 @@
       0 1px 2px -1px rgb(255 255 255 / 0.1);
   }
 
-  /* Responsive spacing utilities */
+  /* Enhanced responsive spacing utilities */
   .space-responsive-x > * + * {
-    @apply ml-2 sm:ml-3 lg:ml-4;
+    @apply ml-1 sm:ml-2 md:ml-3 lg:ml-4 xl:ml-5;
   }
 
   .space-responsive-y > * + * {
-    @apply mt-2 sm:mt-3 lg:mt-4;
+    @apply mt-1 sm:mt-2 md:mt-3 lg:mt-4 xl:mt-5;
+  }
+
+  /* Mobile visibility utilities */
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+
+  .tablet-only {
+    @apply hidden sm:block lg:hidden;
+  }
+
+  .desktop-only {
+    @apply hidden lg:block;
+  }
+
+  .large-desktop-only {
+    @apply hidden xl:block;
+  }
+
+  /* Responsive text truncation */
+  .truncate-responsive {
+    @apply truncate sm:text-clip sm:whitespace-normal md:truncate;
+  }
+
+  /* Enhanced responsive flex utilities */
+  .flex-responsive {
+    @apply flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4;
+  }
+
+  .flex-responsive-reverse {
+    @apply flex-col-reverse sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4;
   }
 }
