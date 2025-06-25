@@ -182,8 +182,10 @@ export default function Tags() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
+      toast.success("Tag created successfully");
     } catch (error) {
       console.error("Failed to create tag:", error);
+      toast.error("Failed to create tag");
     }
   };
 
