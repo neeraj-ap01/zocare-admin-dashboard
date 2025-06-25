@@ -86,8 +86,14 @@ export default function Forms() {
     setShowFormBuilder(false);
   };
 
+  const handleSaveForm = () => {
+    // Show success message and navigate back
+    setShowFormBuilder(false);
+    // You can add toast notification here
+  };
+
   if (showFormBuilder) {
-    return <FormBuilder onBack={handleBackToList} />;
+    return <FormBuilder onBack={handleBackToList} onSave={handleSaveForm} />;
   }
 
   return (
