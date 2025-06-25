@@ -10,6 +10,7 @@ interface FormHeaderProps {
   onBack: () => void;
   onSave?: () => void;
   isActive?: boolean;
+  isSaving?: boolean;
 }
 
 export function FormHeader({
