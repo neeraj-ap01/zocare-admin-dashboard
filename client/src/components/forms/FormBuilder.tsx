@@ -84,7 +84,7 @@ const dropAnimationConfig: DropAnimation = {
   }),
 };
 
-export function FormBuilder({ onBack }: FormBuilderProps) {
+export function FormBuilder({ onBack, onSave }: FormBuilderProps) {
   const [formName, setFormName] = useState("New form");
   const [titleName, setTitleName] = useState("New form");
   const [isEditableForEndUsers, setIsEditableForEndUsers] = useState(false);
