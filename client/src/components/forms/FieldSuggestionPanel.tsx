@@ -242,7 +242,20 @@ function DraggableFieldItem({
               {field.label}
             </h4>
             {!isMobile && !isAdded && (
-              <GripVertical className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAdd();
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-primary/10 hover:text-primary"
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+                <GripVertical className="w-4 h-4 text-muted-foreground" />
+              </div>
             )}
           </div>
 
