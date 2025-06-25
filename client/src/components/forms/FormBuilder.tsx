@@ -37,6 +37,11 @@ import {
   Circle,
   Hash,
   Calendar,
+  Clock,
+  Mail,
+  Phone,
+  Upload,
+  Link,
   Info,
   PlusCircle,
   ArrowLeft,
@@ -45,6 +50,8 @@ import { cn } from "@/lib/utils";
 
 interface FormBuilderProps {
   onBack: () => void;
+  onSave?: () => void;
+  isSaving?: boolean;
 }
 
 const defaultFields: FormField[] = [
@@ -78,7 +85,11 @@ const dropAnimationConfig: DropAnimation = {
   }),
 };
 
-export function FormBuilder({ onBack }: FormBuilderProps) {
+export function FormBuilder({
+  onBack,
+  onSave,
+  isSaving = false,
+}: FormBuilderProps) {
   const [formName, setFormName] = useState("New form");
   const [titleName, setTitleName] = useState("New form");
   const [isEditableForEndUsers, setIsEditableForEndUsers] = useState(false);
@@ -190,6 +201,8 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
         formName={formName}
         onFormNameChange={setFormName}
         onBack={onBack}
+        onSave={onSave}
+        isSaving={isSaving}
         isActive={true}
       />
 
@@ -225,7 +238,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                 </Alert>
 
                 {/* End User Settings */}
-                <div className="space-y-4 p-4 sm:p-6 bg-muted/30 rounded-lg border border-border">
+                <div className="space-y-4 p-4 sm:p-6 bg-muted/50 dark:bg-muted/20 rounded-lg border border-border">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <Checkbox
@@ -287,7 +300,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                     id="form-fields"
                     className={cn(
                       "space-y-3 min-h-[300px] p-4 sm:p-6 border-2 border-dashed rounded-lg transition-all duration-200",
-                      "border-border bg-card/50 hover:border-primary/50 hover:bg-primary/5",
+                      "border-border bg-card/50 dark:bg-card/20 hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10",
                       fields.length === 0 && "flex items-center justify-center",
                     )}
                   >
@@ -297,7 +310,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                     >
                       {fields.length === 0 ? (
                         <div className="text-center space-y-3">
-                          <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
+                          <div className="w-16 h-16 mx-auto bg-muted/70 dark:bg-muted/30 rounded-full flex items-center justify-center">
                             <PlusCircle className="h-8 w-8 text-muted-foreground" />
                           </div>
                           <div className="space-y-2">
@@ -347,7 +360,7 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
 
         <DragOverlay dropAnimation={dropAnimationConfig}>
           {activeId ? (
-            <div className="bg-card border-2 border-primary rounded-lg p-4 shadow-xl">
+            <div className="bg-card border-2 border-primary rounded-lg p-4 shadow-xl dark:shadow-2xl">
               <div className="flex items-center gap-3">
                 <GripVertical className="h-4 w-4 text-muted-foreground" />
                 {activeField ? (
@@ -362,6 +375,12 @@ export function FormBuilder({ onBack }: FormBuilderProps) {
                         radio: Circle,
                         number: Hash,
                         date: Calendar,
+                        email: Mail,
+                        phone: Phone,
+                        select: ChevronDown,
+                        datetime: Clock,
+                        file: Upload,
+                        url: Link,
                       };
                       const Icon = fieldIcons[activeField.type];
                       return <Icon className="h-4 w-4 text-primary" />;

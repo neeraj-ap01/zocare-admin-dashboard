@@ -57,7 +57,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "select",
+    type: "dropdown",
     label: "Priority",
     placeholder: "Select priority level",
     required: true,
@@ -71,7 +71,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     ],
   },
   {
-    type: "select",
+    type: "dropdown",
     label: "Department",
     placeholder: "Select department",
     required: false,
@@ -137,8 +137,8 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "datetime",
-    label: "Preferred Contact Time",
+    type: "date",
+    label: "Preferred Contact Date",
     placeholder: "When can we reach you?",
     required: false,
     isDefault: false,
@@ -153,7 +153,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "file",
+    type: "text",
     label: "Attachments",
     placeholder: "Upload relevant files",
     required: false,
@@ -161,7 +161,7 @@ const suggestedFields: Omit<FormField, "id">[] = [
     editable: true,
   },
   {
-    type: "url",
+    type: "text",
     label: "Related URL",
     placeholder: "https://example.com",
     required: false,
@@ -178,7 +178,7 @@ const fieldIcons = {
   phone: Phone,
   date: Calendar,
   datetime: Clock,
-  select: ChevronDown,
+  dropdown: ChevronDown,
   multiselect: List,
   checkbox: CheckSquare,
   radio: Circle,
@@ -232,8 +232,20 @@ function DraggableFieldItem({
       onClick={isMobile ? handleClick : undefined}
     >
       <div className="flex items-start gap-3">
-        <div className="shrink-0 w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-          <Icon className="w-4 h-4 text-primary" />
+        <div
+          className={cn(
+            "shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
+            isAdded
+              ? "bg-muted/50 dark:bg-muted/30"
+              : "bg-primary/10 dark:bg-primary/20 group-hover:bg-primary/20 dark:group-hover:bg-primary/30",
+          )}
+        >
+          <Icon
+            className={cn(
+              "w-4 h-4 transition-colors",
+              isAdded ? "text-muted-foreground" : "text-primary",
+            )}
+          />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -242,7 +254,20 @@ function DraggableFieldItem({
               {field.label}
             </h4>
             {!isMobile && !isAdded && (
-              <GripVertical className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAdd();
+                  }}
+                  className="h-6 w-6 p-0 hover:bg-primary/10 hover:text-primary"
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+                <GripVertical className="w-4 h-4 text-muted-foreground" />
+              </div>
             )}
           </div>
 
@@ -298,9 +323,9 @@ export function FieldSuggestionPanel({
   return (
     <div
       className={cn(
-        "bg-background border-l border-border",
+        "bg-background border-l border-border dark:bg-background",
         isMobile
-          ? "fixed inset-0 z-50 bg-background"
+          ? "fixed inset-0 z-50 bg-background dark:bg-background"
           : "w-80 xl:w-96 2xl:w-[400px] flex-shrink-0",
       )}
     >

@@ -39,10 +39,11 @@ import {
   Edit,
   Trash2,
   Users,
-  UserPlus,
-  Settings,
+  Shield,
+  Globe,
+  Lock,
 } from "lucide-react";
-
+import { toast } from "sonner";
 const colorOptions = [
   { value: "#8b5cf6", label: "Purple" },
   { value: "#06b6d4", label: "Cyan" },
@@ -168,7 +169,9 @@ export default function Groups() {
     },
   ];
 
-  const handleCreateGroup = async (formData: FormData) => {
+  const handleCreateGroup = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await createGroupMutation.mutateAsync({
@@ -182,14 +185,21 @@ export default function Groups() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
+      setTimeout(() => {
+        toast.success("Group created successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create group:", error);
+      setTimeout(() => {
+        toast.error("Failed to create group");
+      }, 100);
     }
   };
 
-  const handleUpdateGroup = async (formData: FormData) => {
+  const handleUpdateGroup = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingGroup) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateGroupMutation.mutateAsync({
@@ -201,8 +211,14 @@ export default function Groups() {
       });
       setIsEditDialogOpen(false);
       setEditingGroup(null);
+      setTimeout(() => {
+        toast.success("Group updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update group:", error);
+      setTimeout(() => {
+        toast.error("Failed to update group");
+      }, 100);
     }
   };
 
@@ -238,7 +254,7 @@ export default function Groups() {
                   Create a group to organize users and manage permissions.
                 </DialogDescription>
               </DialogHeader>
-              <form action={handleCreateGroup} className="space-y-4">
+              <form onSubmit={handleCreateGroup} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Group Name</Label>
                   <Input
@@ -335,7 +351,7 @@ export default function Groups() {
             <DialogDescription>Update the group information.</DialogDescription>
           </DialogHeader>
           {editingGroup && (
-            <form action={handleUpdateGroup} className="space-y-4">
+            <form onSubmit={handleUpdateGroup} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Group Name</Label>
                 <Input

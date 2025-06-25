@@ -256,10 +256,10 @@ export function CsvUpload({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Template Download */}
-        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-muted/50 rounded-md">
+          <div className="flex items-start gap-2 min-w-0">
+            <FileText className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
               <p className="text-sm font-medium">Need a template?</p>
               <p className="text-xs text-muted-foreground">
                 Download a sample CSV file with the correct format
@@ -271,6 +271,7 @@ export function CsvUpload({
             variant="outline"
             size="sm"
             onClick={generateTemplate}
+            className="w-full sm:w-auto flex-shrink-0"
           >
             <Download className="h-4 w-4 mr-2" />
             Download Template
@@ -282,7 +283,7 @@ export function CsvUpload({
           <Label htmlFor="csv-file" className="text-sm font-medium">
             Select CSV File
           </Label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Input
               ref={fileInputRef}
               id="csv-file"
@@ -296,7 +297,7 @@ export function CsvUpload({
               type="button"
               onClick={handleUpload}
               disabled={!file || isProcessing}
-              className="px-4"
+              className="w-full sm:w-auto sm:px-4"
             >
               {isProcessing ? (
                 <>

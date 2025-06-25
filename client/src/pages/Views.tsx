@@ -54,6 +54,7 @@ import {
   Filter,
   Settings,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ViewFormData {
   title: string;
@@ -222,15 +223,27 @@ export default function Views() {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      setViewMode("list");
+
+      // Use setTimeout to ensure toast shows after state updates
+      setTimeout(() => {
+        toast.success("View created successfully");
+        setTimeout(() => {
+          setViewMode("list");
+        }, 500);
+      }, 100);
     } catch (error) {
       console.error("Failed to create view:", error);
+      setTimeout(() => {
+        toast.error("Failed to create view");
+      }, 100);
+      throw error; // Re-throw to handle loading state properly
     }
   };
 
-  const handleUpdateView = async (formData: FormData) => {
+  const handleUpdateView = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingView) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateViewMutation.mutateAsync({
@@ -243,8 +256,14 @@ export default function Views() {
       });
       setIsEditDialogOpen(false);
       setEditingView(null);
+      setTimeout(() => {
+        toast.success("View updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update view:", error);
+      setTimeout(() => {
+        toast.error("Failed to update view");
+      }, 100);
     }
   };
 
@@ -317,7 +336,7 @@ export default function Views() {
             </DialogDescription>
           </DialogHeader>
           {editingView && (
-            <form action={handleUpdateView} className="space-y-4">
+            <form onSubmit={handleUpdateView} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">View Name</Label>
                 <Input

@@ -198,16 +198,21 @@ export default function Fields() {
     try {
       await createFieldMutation.mutateAsync(fieldData);
       setIsCreateDialogOpen(false);
-      toast.success("Field created successfully");
+      setTimeout(() => {
+        toast.success("Field created successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create field:", error);
-      toast.error("Failed to create field");
+      setTimeout(() => {
+        toast.error("Failed to create field");
+      }, 100);
     }
   };
 
-  const handleUpdateField = async (formData: FormData) => {
+  const handleUpdateField = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingField) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateFieldMutation.mutateAsync({
@@ -295,7 +300,7 @@ export default function Fields() {
             </DialogDescription>
           </DialogHeader>
           {editingField && (
-            <form action={handleUpdateField} className="space-y-4">
+            <form onSubmit={handleUpdateField} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Field Name</Label>
                 <Input

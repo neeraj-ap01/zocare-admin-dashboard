@@ -51,6 +51,7 @@ import {
   Shield,
   UserX,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const roleOptions: { value: UserRole; label: string; color: string }[] = [
   { value: "admin", label: "Admin", color: "text-red-600" },
@@ -183,7 +184,9 @@ export default function TeamMembers() {
     },
   ];
 
-  const handleCreateUser = async (formData: FormData) => {
+  const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await createUserMutation.mutateAsync({
@@ -198,14 +201,21 @@ export default function TeamMembers() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
+      setTimeout(() => {
+        toast.success("Team member added successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create user:", error);
+      setTimeout(() => {
+        toast.error("Failed to add team member");
+      }, 100);
     }
   };
 
-  const handleUpdateUser = async (formData: FormData) => {
+  const handleUpdateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingUser) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateUserMutation.mutateAsync({
@@ -219,8 +229,14 @@ export default function TeamMembers() {
       });
       setIsEditDialogOpen(false);
       setEditingUser(null);
+      setTimeout(() => {
+        toast.success("Team member updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update user:", error);
+      setTimeout(() => {
+        toast.error("Failed to update team member");
+      }, 100);
     }
   };
 
@@ -256,7 +272,7 @@ export default function TeamMembers() {
                   Invite a new user to join your team.
                 </DialogDescription>
               </DialogHeader>
-              <form action={handleCreateUser} className="space-y-4">
+              <form onSubmit={handleCreateUser} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
@@ -360,7 +376,7 @@ export default function TeamMembers() {
             </DialogDescription>
           </DialogHeader>
           {editingUser && (
-            <form action={handleUpdateUser} className="space-y-4">
+            <form onSubmit={handleUpdateUser} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-firstName">First Name</Label>

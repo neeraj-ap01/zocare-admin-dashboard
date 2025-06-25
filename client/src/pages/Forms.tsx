@@ -68,6 +68,7 @@ export default function Forms() {
   const [activeTab, setActiveTab] = useState("active");
   const [searchTerm, setSearchTerm] = useState("");
   const [forms, setForms] = useState<TicketForm[]>(mockForms);
+  const [isSaving, setIsSaving] = useState(false);
 
   const filteredForms = forms.filter((form) =>
     form.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -86,8 +87,27 @@ export default function Forms() {
     setShowFormBuilder(false);
   };
 
+  const handleSaveForm = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Show success message and navigate back
+      setShowFormBuilder(false);
+      // You can add toast notification here if needed
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (showFormBuilder) {
-    return <FormBuilder onBack={handleBackToList} />;
+    return (
+      <FormBuilder
+        onBack={handleBackToList}
+        onSave={handleSaveForm}
+        isSaving={isSaving}
+      />
+    );
   }
 
   return (

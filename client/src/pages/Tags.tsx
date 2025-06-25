@@ -44,6 +44,7 @@ import {
   EyeOff,
   TrendingUp,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const colorPresets = [
   "#ef4444", // Red
@@ -165,7 +166,9 @@ export default function Tags() {
     },
   ];
 
-  const handleCreateTag = async (formData: FormData) => {
+  const handleCreateTag = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await createTagMutation.mutateAsync({
@@ -179,14 +182,21 @@ export default function Tags() {
         updatedAt: new Date(),
       });
       setIsCreateDialogOpen(false);
+      setTimeout(() => {
+        toast.success("Tag created successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to create tag:", error);
+      setTimeout(() => {
+        toast.error("Failed to create tag");
+      }, 100);
     }
   };
 
-  const handleUpdateTag = async (formData: FormData) => {
+  const handleUpdateTag = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingTag) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateTagMutation.mutateAsync({
@@ -199,8 +209,14 @@ export default function Tags() {
       });
       setIsEditDialogOpen(false);
       setEditingTag(null);
+      setTimeout(() => {
+        toast.success("Tag updated successfully");
+      }, 100);
     } catch (error) {
       console.error("Failed to update tag:", error);
+      setTimeout(() => {
+        toast.error("Failed to update tag");
+      }, 100);
     }
   };
 
@@ -236,7 +252,7 @@ export default function Tags() {
                   Add a new tag for categorizing tickets.
                 </DialogDescription>
               </DialogHeader>
-              <form action={handleCreateTag} className="space-y-4">
+              <form onSubmit={handleCreateTag} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Tag Name</Label>
                   <Input
@@ -336,7 +352,7 @@ export default function Tags() {
             <DialogDescription>Update the tag information.</DialogDescription>
           </DialogHeader>
           {editingTag && (
-            <form action={handleUpdateTag} className="space-y-4">
+            <form onSubmit={handleUpdateTag} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Tag Name</Label>
                 <Input

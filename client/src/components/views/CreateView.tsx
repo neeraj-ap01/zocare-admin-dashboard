@@ -18,6 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ChevronLeft, AlertTriangle } from "lucide-react";
 import { ConditionRow } from "./ConditionRow";
 import { ColumnManager } from "./ColumnManager";
+import { PreviewPanel } from "./PreviewPanel";
 import { FilterCondition } from "@/types";
 
 interface CreateViewProps {
@@ -106,6 +107,7 @@ export function CreateView({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const generateId = () =>
     `condition_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -171,15 +173,15 @@ export function CreateView({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (validateForm()) {
-      onSave(formData);
+      setIsSaving(true);
+      try {
+        await onSave(formData);
+      } finally {
+        setIsSaving(false);
+      }
     }
-  };
-
-  const handlePreview = () => {
-    // Implement preview functionality
-    console.log("Preview view with data:", formData);
   };
 
   // Handle keyboard shortcuts
@@ -224,9 +226,9 @@ export function CreateView({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Main Form */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
           {/* Basic Information */}
           <Card>
             <CardContent className="pt-6 space-y-4">
@@ -478,27 +480,15 @@ export function CreateView({
           </Card>
         </div>
 
-        {/* Preview Panel */}
-        <div className="lg:col-span-1">
-          <Card className="sticky top-6">
-            <CardHeader>
-              <CardTitle className="text-base">Preview</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                A sneak peek at how your conditions might work together to
-                filter tickets.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                onClick={handlePreview}
-                className="w-full"
-                disabled={isLoading}
-              >
-                Preview
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Preview Section - Full Width */}
+        <div className="space-y-6">
+          <PreviewPanel
+            conditions={formData.conditions}
+            columns={formData.columns}
+            groupBy={formData.groupBy}
+            orderBy={formData.orderBy}
+            sortDirection={formData.sortDirection}
+          />
         </div>
       </div>
 
@@ -513,10 +503,17 @@ export function CreateView({
         </Button>
         <Button
           onClick={handleSave}
-          disabled={isLoading}
+          disabled={isLoading || isSaving}
           className="order-1 sm:order-2"
         >
-          {isLoading ? "Creating..." : "Create view"}
+          {isLoading || isSaving ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+              Creating...
+            </>
+          ) : (
+            "Create view"
+          )}
         </Button>
         <div className="order-3 sm:hidden text-xs text-muted-foreground text-center">
           Press Cmd+S to save, Esc to cancel
