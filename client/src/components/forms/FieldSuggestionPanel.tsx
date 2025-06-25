@@ -232,8 +232,20 @@ function DraggableFieldItem({
       onClick={isMobile ? handleClick : undefined}
     >
       <div className="flex items-start gap-3">
-        <div className="shrink-0 w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
-          <Icon className="w-4 h-4 text-primary" />
+        <div
+          className={cn(
+            "shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
+            isAdded
+              ? "bg-muted/50 dark:bg-muted/30"
+              : "bg-primary/10 dark:bg-primary/20 group-hover:bg-primary/20 dark:group-hover:bg-primary/30",
+          )}
+        >
+          <Icon
+            className={cn(
+              "w-4 h-4 transition-colors",
+              isAdded ? "text-muted-foreground" : "text-primary",
+            )}
+          />
         </div>
 
         <div className="flex-1 min-w-0">
