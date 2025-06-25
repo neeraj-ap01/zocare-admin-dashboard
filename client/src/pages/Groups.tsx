@@ -207,8 +207,10 @@ export default function Groups() {
       });
       setIsEditDialogOpen(false);
       setEditingGroup(null);
+      toast.success("Group updated successfully");
     } catch (error) {
       console.error("Failed to update group:", error);
+      toast.error("Failed to update group");
     }
   };
 
