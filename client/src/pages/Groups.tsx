@@ -168,7 +168,9 @@ export default function Groups() {
     },
   ];
 
-  const handleCreateGroup = async (formData: FormData) => {
+  const handleCreateGroup = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await createGroupMutation.mutateAsync({
@@ -187,9 +189,10 @@ export default function Groups() {
     }
   };
 
-  const handleUpdateGroup = async (formData: FormData) => {
+  const handleUpdateGroup = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!editingGroup) return;
-
+    const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
     try {
       await updateGroupMutation.mutateAsync({
