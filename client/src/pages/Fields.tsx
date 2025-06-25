@@ -295,7 +295,7 @@ export default function Fields() {
             </DialogDescription>
           </DialogHeader>
           {editingField && (
-            <form action={handleUpdateField} className="space-y-4">
+            <form onSubmit={handleUpdateField} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Field Name</Label>
                 <Input
