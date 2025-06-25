@@ -225,8 +225,10 @@ export default function TeamMembers() {
       });
       setIsEditDialogOpen(false);
       setEditingUser(null);
+      toast.success("Team member updated successfully");
     } catch (error) {
       console.error("Failed to update user:", error);
+      toast.error("Failed to update team member");
     }
   };
 
