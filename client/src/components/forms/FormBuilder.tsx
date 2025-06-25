@@ -50,6 +50,7 @@ import { cn } from "@/lib/utils";
 
 interface FormBuilderProps {
   onBack: () => void;
+  onSave?: () => void;
 }
 
 const defaultFields: FormField[] = [
